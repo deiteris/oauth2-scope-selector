@@ -5,7 +5,7 @@ node_js: stable
 before_script:
   - npm install --silent bower polylint web-component-tester
   - ./node_modules/.bin/bower install --silent
-  - ./node_modules/.bin/polylint
+  - ./node_modules/.bin/polylint --no-recursion
 matrix:
   include:
     - node_js: stable
