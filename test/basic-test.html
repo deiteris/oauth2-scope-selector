@@ -85,6 +85,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         input.value = 't';
         input._onInput(); // forces iron-input to revalidate
         MockInteractions.focus(input);
+        input.focus();
         // paper autocomplete has 200 ms delay on focus.
         Polymer.Base.async(function() {
           assert.isTrue(auto.opened, 'Paper-autocomplete is not opened');
@@ -127,6 +128,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         input.value = 'u';
         input._onInput(); // forces iron-input to revalidate
         MockInteractions.focus(input);
+        input.focus();
         // paper autocomplete has 200 ms delay on focus.
         Polymer.Base.async(function() {
           assert.isTrue(auto.opened, 'Paper-autocomplete is not opened');
