@@ -21,6 +21,9 @@ the License.
 <link rel="import" href="../paper-toast/paper-toast.html">
 <link rel="import" href="../arc-icons/arc-icons.html">
 <link rel="import" href="../paper-autocomplete/paper-autocomplete.html">
+<link rel="import" href="../iron-validatable-behavior/iron-validatable-behavior.html">
+<link rel="import" href="../iron-form-element-behavior/iron-form-element-behavior.html">
+<link rel="import" href="../iron-behaviors/iron-control-state.html">
 <!--
 A selector for the OAuth scope. It provides an UI to enter a scope for the AOuth settings.
 
@@ -130,7 +133,7 @@ Custom property | Description | Default
     </style>
     <div class="container">
       <label class="form-label">Scopes</label>
-      <paper-input-container no-label-float>
+      <paper-input-container no-label-float invalid="[[invalid]]">
         <label>Scope value</label>
         <input is="iron-input" bind-value="{{currentValue}}" on-keydown="_keyDown"/>
         <paper-icon-button suffix icon="arc:add-circle-outline" on-tap="_appendScope" title="Add scope"></paper-icon-button>
@@ -159,6 +162,13 @@ Custom property | Description | Default
   <script>
   Polymer({
     is: 'oauth2-scope-selector',
+
+    behaviors: [
+      Polymer.IronControlState,
+      Polymer.IronFormElementBehavior,
+      Polymer.IronValidatableBehavior
+    ],
+
     properties: {
       /**
        * List of scopes entered by the user. It can be used it pre-select scopes by providing
@@ -205,8 +215,26 @@ Custom property | Description | Default
         type: Boolean,
         value: false,
         computed: '_computeAllowedInputType(allowedScopes)'
+      },
+      /**
+       * Set to true to auto-validate the input value when it changes.
+       */
+      autoValidate: {
+        type: Boolean,
+        value: false
       }
     },
+
+    observers: ['_handleAutoValidate(autoValidate, scopes.*)'],
+
+    get value() {
+      return this.scopes;
+    },
+
+    set value(scopes) {
+      this.scopes = scopes;
+    },
+
     // Add currently entered scope value to the scopes list.
     _appendScope: function() {
       var value = this.currentValue;
@@ -290,6 +318,11 @@ Custom property | Description | Default
         return;
       }
       this._appendScope();
+      this.async(function() {
+        this.currentValue = '';
+        this.$$('input[is="iron-input"]').focus();
+        // this.$$('input[is="iron-input"]').bindValue = '';
+      }, 10);
     },
     // Normalize scopes to use with autocomplete
     _normalizeScopes: function(scopes) {
@@ -328,7 +361,26 @@ Custom property | Description | Default
         return '';
       }
       return this.allowedScopes[index].description;
+    },
+
+    /**
+     * Returns false if the element is required and does not have a selection,
+     * and true otherwise.
+     *
+     * @return {boolean} true if `required` is false, or if `required` is true
+     * and the element has a valid selection.
+     */
+    _getValidity: function() {
+      return this.disabled || !this.required || (this.required &&
+        !!(this.scopes && this.scopes.length));
+    },
+
+    _handleAutoValidate: function(autoValidate) {
+      if (autoValidate) {
+        this.invalid = !this._getValidity();
+      }
     }
+
   });
   </script>
 </dom-module>

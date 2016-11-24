@@ -25,7 +25,10 @@
     "paper-input": "PolymerElements/paper-input#^1.1.22",
     "arc-icons": "advanced-rest-client/arc-icons#^1.0.9",
     "paper-toast": "PolymerElements/paper-toast#^1.3.0",
-    "paper-autocomplete": "advanced-rest-client/paper-autocomplete#^1.0.11"
+    "paper-autocomplete": "advanced-rest-client/paper-autocomplete#^1.0.11",
+    "iron-validatable-behavior": "PolymerElements/iron-validatable-behavior#^1.1.1",
+    "iron-form-element-behavior": "PolymerElements/iron-form-element-behavior#^1.0.6",
+    "iron-behaviors": "PolymerElements/iron-behaviors#^1.0.17"
   },
   "devDependencies": {
     "iron-component-page": "polymerelements/iron-component-page#1.0.0",
