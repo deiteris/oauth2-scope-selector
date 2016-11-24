@@ -3,14 +3,28 @@ sudo: required
 dist: trusty
 node_js: stable
 before_script:
-- npm install --silent bower polymer-cli
-- bower install --silent
-addons:
-  sauce_connect: true
-script:
-- "./node_modules/.bin/polymer lint oauth2-scope-selector.html"
-- ./node_modules/.bin/polymer test --plugin sauce --job-name "oauth2-scope-selector:${TRAVIS_BRANCH}"
-  --build-number=${TRAVIS_BUILD_NUMBER}
+  - npm install --silent bower polylint web-component-tester
+  - ./node_modules/.bin/bower install --silent
+  - ./node_modules/.bin/polylint
+matrix:
+  include:
+    - node_js: stable
+      script: xvfb-run -a wct --simpleOutput -l firefox -l chrome
+      addons:
+        firefox: latest
+        apt:
+          sources:
+            - google-chrome
+          packages:
+            - google-chrome-stable
+    - node_js: node
+      script:
+        - >
+          if [ "${TRAVIS_PULL_REQUEST}" = "false" ]; then
+            wct --simpleOutput -s 'Windows 10/microsoftedge' -s 'Windows 8.1/internet explorer@11' -s 'Windows 7/internet explorer@10' -s 'OS X 10.10/safari@8' -s 'OS X 10.9/safari@7'
+          fi
+# script:
+# - ./node_modules/.bin/polymer test --plugin sauce --job-name "oauth2-scope-selector:${TRAVIS_BRANCH}" --build-number=${TRAVIS_BUILD_NUMBER}
 cache:
   directories:
   - bower_components
@@ -25,3 +39,10 @@ env:
   global:
   - secure: bvSifdzkunqS6Wg3wv2MimxFrGr8rco0a9IZx+JTDDarWKZVFQSSYe39u5HfVgwa7raZwDCMKaWx3HzD6sUXuZxdJu4OL73EQZbkI2F6NaHSH3t8OSAPrB7mOvFdo9fhT1yPL5grk0XxZzjy6v4Hu6wC7Pk9+dSb3wu6nW5K+vA6AwK0vJrF2CGocRZpyyxShRnzM8dfrAkeMch5HFRdq4JDUJPWUaeMR8NykOlL5nTNQHUXGNC3kSTMRdFi4l+DUapuMfDcpKd5nVTPjxRMp/gna7ivHRvsi+lYSVJ21lE4xwJtvLl+il92uBZkOeay+4B2X2q08LE7SBYwzN95lV+hyPaZcdB/OsM7tdI9U/uEw7CwGtO+0n9Yz059oJPi4RJZQnrUpzuwjQ45ypVpqhNxwqmo7Nn+lhpZ6W/Csp4Zcn4pZhEmBspWGo0UOc7SrCpEyZtVyuiIheVU4AdzAlsmwGoplFD0fqLYrei8xBiTSzg9gjqYaYSYA3EA7VYbNXUesHhC18Jf2il0rT2eWZy0ge1OOJFF2ST63romdoYihqD89ATvVSrqIikinM7387xgWVnR+dDodrI4/1CY9gdZ2ozVO+hgHAlGs/dkzlD9U9qL1Rz29bOsxwTmOqGTTIhzXk7zeQcT4Dw0iH8W86cf6FG8kwtrK+3+rUHxaTI=
   - secure: e96agNB75vypnO5M3pMfK69bqpOwOV2F/N5COKy+5WCCDMI/P60TS9V9IKdxrzCJNefv77oT1k4gUp73RrUKsql4GXYmqgZ9c1KUZW70NXM0H5xqz0hIaqgRy+BDX1AyXa//X3jLhxo7hpJ7vslyPLsSosXGlcbxlSgsVP+zzGqAyzeooEOxtovGTxglkOaU2wIXWI4cY1HRfQMnpIWqH1m0+6s0+RDD8FnZ+yCKQgqxJpjl89WzpXTQU4SMOx8stcqYkmPCSzr+j4Qi/M+UmlQh5LYjxyShyn9o1WfOzAw7Tjrmz8nzjPSav5e90qnDZNJ+8GD9/KIOdoq0urbpxVDJwAksTYNFJrN4Gyb6XkX5mKM7cnDAaIG49hRiO2Ak/pgMnPR6iCxYm+xCZutOKMD9WjCizanu1fUniBp0E8ffT8kp4MmzkHU5vDfpHhuK7Y6JdgpFq8PwznsDR1O68K8VX1u4O0p7E1+UsY03G/Ozfo0ndhFwr5FJoks0ubm4FFTFWOni9ydJ8CcUbsvnanjx+smSz66+8uIeHQfEHGrx2kJCJrAiq9kDLL796cbYGbxYmJdxzxlea+P/j2SAcn84racm+Nmnd2fBSJqcxd8D88f/DelNa4PvdHhScN+CFZVqY4KABqyqUjnW81HatVeO8VLSfne2tfoJKoeOjjM=
+addons:
+  firefox: latest
+  apt:
+    sources:
+      - google-chrome
+    packages:
+      - google-chrome-stable
