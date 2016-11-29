@@ -1,6 +1,6 @@
 {
   "name": "oauth2-scope-selector",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "license": "Apache-2.0 OR CC-BY-4.0",
   "description": "A selector for the OAuth scope. It provides an UI to enter a scope for the AOuth settings",
   "devDependencies": {
