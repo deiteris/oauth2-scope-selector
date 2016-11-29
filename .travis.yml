@@ -3,7 +3,7 @@ sudo: required
 dist: trusty
 node_js: stable
 before_script:
-  - npm install --silent bower polylint web-component-tester
+  - npm install --silent bower polylint
   - ./node_modules/.bin/bower install --silent
   - ./node_modules/.bin/polylint --no-recursion
 cache:
