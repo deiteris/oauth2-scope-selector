@@ -1,3 +1,13 @@
+<a name="1.0.5"></a>
+## [1.0.5](https://github.com/advanced-rest-client/oauth2-scope-selector/compare/1.0.4...v1.0.5) (2017-01-09)
+
+
+### Fix
+
+* Fixed overflow issue for paper-item ([82a727f49578199969c2e5a69fc57d9086e18caf](https://github.com/advanced-rest-client/oauth2-scope-selector/commit/82a727f49578199969c2e5a69fc57d9086e18caf))
+
+
+
 <a name="1.0.4"></a>
 ## [1.0.4](https://github.com/advanced-rest-client/oauth2-scope-selector/compare/0.0.3...v1.0.4) (2016-11-29)
 
