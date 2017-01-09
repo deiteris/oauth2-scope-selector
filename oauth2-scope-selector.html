@@ -97,6 +97,7 @@ Custom property | Description | Default
     <style>
      :host {
       display: block;
+      width: 100%;
       @apply(--oauth2-scope-selector);
     }
 
@@ -111,7 +112,8 @@ Custom property | Description | Default
     }
 
     .item {
-      max-width: calc(100% - 32px);
+      /*max-width: calc(100% - 32px);*/
+      width: calc(100% - 32px);
       @apply(--oauth2-scope-selector-list-item);
     }
 
