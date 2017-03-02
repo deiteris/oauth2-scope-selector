@@ -24,6 +24,7 @@ the License.
 <link rel="import" href="../iron-validatable-behavior/iron-validatable-behavior.html">
 <link rel="import" href="../iron-form-element-behavior/iron-form-element-behavior.html">
 <link rel="import" href="../iron-behaviors/iron-control-state.html">
+<link rel="import" href="../paper-tooltip/paper-tooltip.html">
 <!--
 A selector for the OAuth scope. It provides an UI to enter a scope for the AOuth settings.
 
@@ -97,13 +98,8 @@ Custom property | Description | Default
     <style>
      :host {
       display: block;
-      width: 100%;
+      outline: none;
       @apply(--oauth2-scope-selector);
-    }
-
-    .container {
-      @apply(--layout-vertical);
-      @apply(--layout-start);
     }
 
     .form-label {
@@ -132,31 +128,59 @@ Custom property | Description | Default
       @apply(--icon-button-hover);
     }
 
+    .scope-item {
+      @apply(--layout-horizontal);
+      @apply(--layout-center);
+    }
+
+    .scope-display {
+      @apply(--layout-flex);
+      overflow: hidden;
+      @apply(--arc-font-body1);
+      font-size: 16px;
+    }
+
+    .scope-item[two-line] {
+      margin-bottom: 12px;
+    }
+
+    .scope-item[two-line] .scope-display {
+      font-weight: 400;
+    }
+
+    .scope-item-label {
+      text-overflow: ellipsis;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    .scope-display div[secondary] {
+      font-size: 14px;
+      font-weight: 400;
+      line-height: 20px;
+      color: #737373;
+    }
     </style>
     <div class="container">
       <label class="form-label">Scopes</label>
       <paper-input-container no-label-float invalid="[[invalid]]">
         <label>Scope value</label>
-        <input is="iron-input" bind-value="{{currentValue}}" on-keydown="_keyDown"/>
+        <input is="iron-input" bind-value="{{currentValue}}" on-keydown="_keyDown" id="input" autocomplete="off"/>
         <paper-icon-button suffix icon="arc:add-circle-outline" on-tap="_appendScope" title="Add scope"></paper-icon-button>
         <paper-autocomplete target="[[_inputTarget]]" source="[[_normalizeScopes(allowedScopes)]]" on-selected="_suggestionSelected" open-on-focus></paper-input-autocomplete>
       </paper-input-container>
-
-      <template is="dom-repeat" items="[[scopes]]">
-        <paper-item class="item">
-          <paper-item-body two-line="[[_allowedIsObject]]">
-            <template is="dom-if" if="[[_allowedIsObject]]" restamp="true">
-              <div>[[item]]</div>
+      <paper-tooltip for="input" position="bottom">Enter authorization scopes for this API endpoint. Check your provider's documentation for more information about scopes.</paper-tooltip>
+      <section class="scopes-list" role="list">
+        <template is="dom-repeat" items="[[scopes]]">
+          <div class="scope-item" two-line$="[[_allowedIsObject]]">
+            <div class="scope-display">
+              <div class="scope-item-label">[[item]]</div>
               <div secondary>[[_computeItemDescription(item)]]</div>
-            </template>
-            <template is="dom-if" if="[[!_allowedIsObject]]" restamp="true">
-              [[item]]
-            </template>
-          </paper-item-body>
-          <paper-icon-button icon="arc:remove-circle-outline" on-tap="_removeScope"></paper-icon-button>
-        </paper-item>
-      </template>
-
+            </div>
+            <paper-icon-button icon="arc:remove-circle-outline" on-tap="_removeScope"></paper-icon-button>
+          </div>
+        </template>
+      </div>
     </div>
     <paper-toast text="Enter scope value to add a scope."></paper-toast>
     <paper-toast dissalowed text="You can't enter this scope. Use one of the provided scopes."></paper-toast>
@@ -173,8 +197,8 @@ Custom property | Description | Default
 
     properties: {
       /**
-       * List of scopes entered by the user. It can be used it pre-select scopes by providing
-       * an array with scope values.
+       * List of scopes entered by the user. It can be used it pre-select scopes
+       * by providing an array with scope values.
        */
       scopes: {
         type: Array,
@@ -184,8 +208,9 @@ Custom property | Description | Default
         notify: true
       },
       /**
-       * Current value entered by the user. This is not a scope and it is not yet in the
-       * scopes list. User has to accept the scope before it become available in the scopes list.
+       * Current value entered by the user. This is not a scope and it is not
+       * yet in the scopes list. User has to accept the scope before it become
+       * available in the scopes list.
        */
       currentValue: String,
       // Target for `paper-autocomplete`
@@ -197,20 +222,23 @@ Custom property | Description | Default
       },
       /**
        * List of available scopes.
-       * It can be either list of string or list of object. If this is the list of object then
-       * this expects to each object contain a `label` and `description` keys.
+       * It can be either list of string or list of object. If this is the
+       * list of object then this expects to each object contain a `label`
+       * and `description` keys.
        *
        * ### Example
        * ```
        * {
        *   'label': 'user',
-       *   'description': 'Grants read/write access to profile info only. Note that this scope includes user:email and user:follow.'
+       *   'description': 'Grants read/write access to profile info only. '
        * }
        * ```
-       * When the description is provided it will be displayed below the name of the scope.
+       * When the description is provided it will be displayed below the name
+       * of the scope.
        */
       allowedScopes: Array,
-      // If true then scopes that are in the `allowedScopes` list will be allowed to be add.
+      // If true then scopes that are in the `allowedScopes` list will be
+      // allowed to be add.
       preventCustomScopes: Boolean,
       // Computed value, true if the `allowedScopes` is a list of objects
       _allowedIsObject: {
@@ -224,7 +252,16 @@ Custom property | Description | Default
       autoValidate: {
         type: Boolean,
         value: false
+      },
+
+      _oldTabIndex: {
+        type: Number,
+        value: -1
       }
+    },
+
+    hostAttributes: {
+      'tabIndex': '-1'
     },
 
     observers: ['_handleAutoValidate(autoValidate, scopes.*)'],
@@ -263,13 +300,17 @@ Custom property | Description | Default
     },
     // Handler for the `paper-autocomplete` selected event.
     _suggestionSelected: function(e, detail) {
+      e.preventDefault();
+
       var scope = detail.value;
-      this.currentValue = '';
       this.append(scope);
+      this.async(function() {
+        this.currentValue = '';
+      }, 1);
     },
     /**
-     * Adds a scope to the list. The same as pushing item to the `scopes` array but it will
-     * check for duplicates first.
+     * Adds a scope to the list. The same as pushing item to the `scopes`
+     * array but it will check for duplicates first.
      */
     append: function(scope) {
       var scopeValue = typeof scope === 'string' ? scope : scope.value;
@@ -278,7 +319,8 @@ Custom property | Description | Default
       if (index !== -1) {
         return;
       }
-      if (this.preventCustomScopes && this.allowedScopes && this.allowedScopes.length) {
+      if (this.preventCustomScopes && this.allowedScopes &&
+        this.allowedScopes.length) {
         index = this._findAllowedScopeIndex(scopeValue);
         if (index === -1) {
           this.$$('paper-toast[dissalowed]').opened = true;
@@ -342,8 +384,9 @@ Custom property | Description | Default
       });
     },
     /**
-     * Compute function for the _allowedIsObject. Check first item of the `allowedScopes`
-     * array if it is an object (returns `true`) or string (return `false`);
+     * Compute function for the _allowedIsObject. Check first item of the
+     * `allowedScopes` array if it is an object (return `true`) or
+     * string (return `false`);
      */
     _computeAllowedInputType: function(allowedScopes) {
       if (!allowedScopes || !allowedScopes.length) {
@@ -355,7 +398,8 @@ Custom property | Description | Default
     /**
      * Returns a description for the selected scope.
      *
-     * @return {String} Description of the scope or `` (empty string) if the item do not exists.
+     * @return {String} Description of the scope or `` (empty string) if the
+     * item do not exists.
      */
     _computeItemDescription: function(scope) {
       var index = this._findAllowedScopeIndex(scope);

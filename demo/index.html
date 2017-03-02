@@ -24,11 +24,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <link rel="import" href="../oauth2-scope-selector.html">
 
   <style is="custom-style" include="demo-pages-shared-styles">
-
-    .vertical-section-container {
-      max-width: 600px;
+  :root {
+    --arc-font-body1: {
+      @apply(--paper-font-body1);
     }
+    --accent-color: #FF5040;
+  }
 
+  .vertical-section-container {
+    max-width: 600px;
+  }
   </style>
 </head>
 <body unresolved>
@@ -68,34 +73,35 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <template>
         <oauth2-scope-selector id="withDescription" prevent-custom-scopes></oauth2-scope-selector>
         <script>
-          var scopes = [
-            {'label': 'user', 'description': 'Grants read/write access to profile info only. Note that this scope includes user:email and user:follow.'},
-            {'label': 'user:email', 'description': 'Grants read access to a user\'s email addresses.'},
-            {'label': 'user:follow', 'description': 'Grants access to follow or unfollow other users.'},
-            {'label': 'public_repo', 'description': 'Grants read/write access to code, commit statuses, collaborators, and deployment statuses for public repositories and organizations. Also required for starring public repositories.'},
-            {'label': 'repo', 'description': 'Grants read/write access to code, commit statuses, repository invitations, collaborators, and deployment statuses for public and private repositories and organizations.'},
-            {'label': 'repo_deployment', 'description': 'Grants access to deployment statuses for public and private repositories. This scope is only necessary to grant other users or services access to deployment statuses, without granting access to the code.'},
-            {'label': 'repo:status', 'description': 'Grants read/write access to public and private repository commit statuses. This scope is only necessary to grant other users or services access to private repository commit statuses without granting access to the code.' },
-            {'label': 'delete_repo', 'description': 'Grants access to delete adminable repositories.'},
-            {'label': 'notifications', 'description': 'Grants read access to a user\'s notifications. repo also provides this access.'},
-            {'label': 'gist', 'description': 'Grants write access to gists.'},
-            {'label': 'read:repo_hook', 'description': 'Grants read and ping access to hooks in public or private repositories.'},
-            {'label': 'write:repo_hook', 'description': 'Grants read, write, and ping access to hooks in public or private repositories.'},
-            {'label': 'admin:repo_hook', 'description': 'Grants read, write, ping, and delete access to hooks in public or private repositories.'},
-            {'label': 'admin:org_hook', 'description': 'Grants read, write, ping, and delete access to organization hooks. '},
-            {'label': 'read:org', 'description': 'Read-only access to organization, teams, and membership.'},
-            {'label': 'write:org', 'description': 'Publicize and unpublicize organization membership.'},
-            {'label': 'admin:org', 'description': 'Fully manage organization, teams, and memberships.'},
-            {'label': 'read:public_key', 'description': 'List and view details for public keys.'},
-            {'label': 'write:public_key', 'description': 'Create, list, and view details for public keys.'},
-            {'label': 'admin:public_key', 'description': 'Fully manage public keys.'},
-            {'label': 'read:gpg_key', 'description': 'List and view details for GPG keys.'},
-            {'label': 'write:gpg_key', 'description': 'Create, list, and view details for GPG keys.'},
-            {'label': 'admin:gpg_key', 'description': 'Fully manage GPG keys.'}
-          ];
-          var element = document.getElementById('withDescription');
-          element.allowedScopes = scopes;
-          element.scopes = ['user:email', 'public_repo'];
+        // jscs:disable maximumLineLength
+        var scopes = [
+          {'label': 'user', 'description': 'Grants read/write access to profile info only. Note that this scope includes user:email and user:follow.'},
+          {'label': 'user:email', 'description': 'Grants read access to a user\'s email addresses.'},
+          {'label': 'user:follow', 'description': 'Grants access to follow or unfollow other users.'},
+          {'label': 'public_repo', 'description': 'Grants read/write access to code, commit statuses, collaborators, and deployment statuses for public repositories and organizations. Also required for starring public repositories.'},
+          {'label': 'repo', 'description': 'Grants read/write access to code, commit statuses, repository invitations, collaborators, and deployment statuses for public and private repositories and organizations.'},
+          {'label': 'repo_deployment', 'description': 'Grants access to deployment statuses for public and private repositories. This scope is only necessary to grant other users or services access to deployment statuses, without granting access to the code.'},
+          {'label': 'repo:status', 'description': 'Grants read/write access to public and private repository commit statuses. This scope is only necessary to grant other users or services access to private repository commit statuses without granting access to the code.'},
+          {'label': 'delete_repo', 'description': 'Grants access to delete adminable repositories.'},
+          {'label': 'notifications', 'description': 'Grants read access to a user\'s notifications. repo also provides this access.'},
+          {'label': 'gist', 'description': 'Grants write access to gists.'},
+          {'label': 'read:repo_hook', 'description': 'Grants read and ping access to hooks in public or private repositories.'},
+          {'label': 'write:repo_hook', 'description': 'Grants read, write, and ping access to hooks in public or private repositories.'},
+          {'label': 'admin:repo_hook', 'description': 'Grants read, write, ping, and delete access to hooks in public or private repositories.'},
+          {'label': 'admin:org_hook', 'description': 'Grants read, write, ping, and delete access to organization hooks. '},
+          {'label': 'read:org', 'description': 'Read-only access to organization, teams, and membership.'},
+          {'label': 'write:org', 'description': 'Publicize and unpublicize organization membership.'},
+          {'label': 'admin:org', 'description': 'Fully manage organization, teams, and memberships.'},
+          {'label': 'read:public_key', 'description': 'List and view details for public keys.'},
+          {'label': 'write:public_key', 'description': 'Create, list, and view details for public keys.'},
+          {'label': 'admin:public_key', 'description': 'Fully manage public keys.'},
+          {'label': 'read:gpg_key', 'description': 'List and view details for GPG keys.'},
+          {'label': 'write:gpg_key', 'description': 'Create, list, and view details for GPG keys.'},
+          {'label': 'admin:gpg_key', 'description': 'Fully manage GPG keys.'}
+        ];
+        var element = document.getElementById('withDescription');
+        element.allowedScopes = scopes;
+        element.scopes = ['user:email', 'public_repo'];
         </script>
       </template>
     </arc-demo-snippet>
