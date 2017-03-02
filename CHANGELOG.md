@@ -1,3 +1,13 @@
+<a name="1.0.6"></a>
+## [1.0.6](https://github.com/advanced-rest-client/oauth2-scope-selector/compare/1.0.5...v1.0.6) (2017-03-02)
+
+
+### Update
+
+* Updated element's styles so it will now respec parent's size when handling long scope names ([2c7d8df039434a28d52769613ed9c01f18d08811](https://github.com/advanced-rest-client/oauth2-scope-selector/commit/2c7d8df039434a28d52769613ed9c01f18d08811))
+
+
+
 <a name="1.0.5"></a>
 ## [1.0.5](https://github.com/advanced-rest-client/oauth2-scope-selector/compare/1.0.4...v1.0.5) (2017-01-09)
 

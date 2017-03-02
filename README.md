@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/advanced-rest-client/oauth2-scope-selector.svg?branch=master)](https://travis-ci.org/advanced-rest-client/oauth2-scope-selector)  
+[![Build Status](https://travis-ci.org/advanced-rest-client/oauth2-scope-selector.svg?branch=stage)](https://travis-ci.org/advanced-rest-client/oauth2-scope-selector)  
 
 # oauth2-scope-selector
 
