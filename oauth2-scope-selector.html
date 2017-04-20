@@ -13,13 +13,13 @@ the License.
 -->
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
-<link rel="import" href="../paper-input/paper-input-container.html">
-<link rel="import" href="../iron-input/iron-input.html">
+<link rel="import" href="../anypoint-text-field/anypoint-text-container.html">
+<link rel="import" href="../anypoint-input/anypoint-input.html">
 <link rel="import" href="../paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../paper-item/paper-item.html">
 <link rel="import" href="../paper-item/paper-item-body.html">
 <link rel="import" href="../paper-toast/paper-toast.html">
-<link rel="import" href="../arc-icons/arc-icons.html">
+<link rel="import" href="../anypoint-icons/anypoint-icons.html">
 <link rel="import" href="../paper-autocomplete/paper-autocomplete.html">
 <link rel="import" href="../iron-validatable-behavior/iron-validatable-behavior.html">
 <link rel="import" href="../iron-form-element-behavior/iron-form-element-behavior.html">
@@ -163,12 +163,12 @@ Custom property | Description | Default
     </style>
     <div class="container">
       <label class="form-label">Scopes</label>
-      <paper-input-container no-label-float invalid="[[invalid]]">
+      <anypoint-text-container no-label-float invalid="[[invalid]]">
         <label>Scope value</label>
-        <input is="iron-input" bind-value="{{currentValue}}" on-keydown="_keyDown" id="input" autocomplete="off"/>
-        <paper-icon-button suffix icon="arc:add-circle-outline" on-tap="_appendScope" title="Add scope"></paper-icon-button>
-        <paper-autocomplete target="[[_inputTarget]]" source="[[_normalizeScopes(allowedScopes)]]" on-selected="_suggestionSelected" open-on-focus></paper-input-autocomplete>
-      </paper-input-container>
+        <input is="anypoint-input" bind-value="{{currentValue}}" on-keydown="_keyDown" id="input" autocomplete="off"/>
+        <paper-icon-button noink suffix icon="anypoint:circle-plus" on-tap="_appendScope" title="Add scope"></paper-icon-button>
+        <paper-autocomplete target="[[_inputTarget]]" source="[[_normalizeScopes(allowedScopes)]]" on-selected="_suggestionSelected" open-on-focus></paper-autocomplete>
+      </anypoint-text-container>
       <paper-tooltip for="input" position="bottom">Enter authorization scopes for this API endpoint. Check your provider's documentation for more information about scopes.</paper-tooltip>
       <section class="scopes-list" role="list">
         <template is="dom-repeat" items="[[scopes]]">
@@ -177,13 +177,13 @@ Custom property | Description | Default
               <div class="scope-item-label">[[item]]</div>
               <div secondary>[[_computeItemDescription(item)]]</div>
             </div>
-            <paper-icon-button icon="arc:remove-circle-outline" on-tap="_removeScope"></paper-icon-button>
+            <paper-icon-button noink icon="anypoint:circle-minus" title="Remove scope from the list" on-tap="_removeScope"></paper-icon-button>
           </div>
         </template>
       </div>
     </div>
-    <paper-toast text="Enter scope value to add a scope."></paper-toast>
-    <paper-toast dissalowed text="You can't enter this scope. Use one of the provided scopes."></paper-toast>
+    <paper-toast text="Enter scope value to add a scope." horizontal-align="right" horizontal-offset="20"></paper-toast>
+    <paper-toast dissalowed text="You can't enter this scope. Use one of the provided scopes." horizontal-align="right" horizontal-offset="20"></paper-toast>
   </template>
   <script>
   Polymer({
@@ -217,7 +217,7 @@ Custom property | Description | Default
       _inputTarget: {
         type: HTMLElement,
         value: function() {
-          return this.$$('input[is="iron-input"]');
+          return this.$$('input[is="anypoint-input"]');
         }
       },
       /**
@@ -364,7 +364,7 @@ Custom property | Description | Default
       this._appendScope();
       this.async(function() {
         this.currentValue = '';
-        this.$$('input[is="iron-input"]').focus();
+        this.$$('input[is="anypoint-input"]').focus();
         // this.$$('input[is="iron-input"]').bindValue = '';
       }, 10);
     },

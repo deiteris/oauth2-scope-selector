@@ -53,7 +53,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       });
 
       test('Accepts scope', function() {
-        var input = Polymer.dom(element.root).querySelector('input[is="iron-input"]');
+        var input = Polymer.dom(element.root).querySelector('input[is="anypoint-input"]');
         input.value = 'test';
         input._onInput(); // forces iron-input to revalidate
         MockInteractions.pressEnter(input);
@@ -62,7 +62,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       });
 
       test('Input cleared after scope acceptance', function() {
-        var input = Polymer.dom(element.root).querySelector('input[is="iron-input"]');
+        var input = Polymer.dom(element.root).querySelector('input[is="anypoint-input"]');
         input.value = 'test';
         input._onInput(); // forces iron-input to revalidate
         assert.lengthOf(element.currentValue, 4);
@@ -94,7 +94,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       // });
 
       test('Accepts alloowed scope', function() {
-        var input = Polymer.dom(element.root).querySelector('input[is="iron-input"]');
+        var input = Polymer.dom(element.root).querySelector('input[is="anypoint-input"]');
         input.value = 'test';
         input._onInput(); // forces iron-input to revalidate
         MockInteractions.pressEnter(input);
@@ -102,7 +102,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       });
 
       test('Do not accepts disalloowed scope', function() {
-        var input = Polymer.dom(element.root).querySelector('input[is="iron-input"]');
+        var input = Polymer.dom(element.root).querySelector('input[is="anypoint-input"]');
         input.value = 'tes';
         input._onInput();
         MockInteractions.pressEnter(input);
@@ -137,7 +137,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       // });
 
       test('Accepts alloowed scope', function() {
-        var input = Polymer.dom(element.root).querySelector('input[is="iron-input"]');
+        var input = Polymer.dom(element.root).querySelector('input[is="anypoint-input"]');
         input.value = 'user';
         input._onInput(); // forces iron-input to revalidate
         MockInteractions.pressEnter(input);
@@ -145,7 +145,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       });
 
       test('Do not accepts disalloowed scope', function() {
-        var input = Polymer.dom(element.root).querySelector('input[is="iron-input"]');
+        var input = Polymer.dom(element.root).querySelector('input[is="anypoint-input"]');
         input.value = 'test';
         input._onInput();
         MockInteractions.pressEnter(input);
