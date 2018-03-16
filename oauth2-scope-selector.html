@@ -11,7 +11,7 @@ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 License for the specific language governing permissions and limitations under
 the License.
 -->
-<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../polymer/polymer-element.html">
 <link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../paper-input/paper-input-container.html">
 <link rel="import" href="../iron-input/iron-input.html">
@@ -24,7 +24,6 @@ the License.
 <link rel="import" href="../iron-validatable-behavior/iron-validatable-behavior.html">
 <link rel="import" href="../iron-form-element-behavior/iron-form-element-behavior.html">
 <link rel="import" href="../iron-behaviors/iron-control-state.html">
-<link rel="import" href="../paper-tooltip/paper-tooltip.html">
 <!--
 A selector for the OAuth scope. It provides an UI to enter a scope for the AOuth settings.
 
@@ -99,18 +98,18 @@ Custom property | Description | Default
      :host {
       display: block;
       outline: none;
-      @apply(--oauth2-scope-selector);
+      @apply --oauth2-scope-selector;
     }
 
     .form-label {
-      @apply(--form-label);
-      @apply(--oauth2-scope-selector-label);
+      @apply --form-label;
+      @apply --oauth2-scope-selector-label;
     }
 
     .item {
       /*max-width: calc(100% - 32px);*/
       width: calc(100% - 32px);
-      @apply(--oauth2-scope-selector-list-item);
+      @apply --oauth2-scope-selector-list-item;
     }
 
     paper-autocomplete {
@@ -120,23 +119,23 @@ Custom property | Description | Default
     paper-icon-button {
       color: var(--hint-trigger-color, rgba(0, 0, 0, 0.54));
       transition: color 0.25s linear;
-      @apply(--icon-button);
+      @apply --icon-button;
     }
 
     paper-icon-button:hover {
       color: var(--hint-trigger-hover-color, rgba(0, 0, 0, 0.78));
-      @apply(--icon-button-hover);
+      @apply --icon-button-hover;
     }
 
     .scope-item {
-      @apply(--layout-horizontal);
-      @apply(--layout-center);
+      @apply --layout-horizontal;
+      @apply --layout-center;
     }
 
     .scope-display {
-      @apply(--layout-flex);
+      @apply --layout-flex;
       overflow: hidden;
-      @apply(--arc-font-body1);
+      @apply --arc-font-body1;
       font-size: 16px;
     }
 
@@ -164,12 +163,11 @@ Custom property | Description | Default
     <div class="container">
       <label class="form-label">Scopes</label>
       <paper-input-container no-label-float invalid="[[invalid]]">
-        <label>Scope value</label>
-        <input is="iron-input" bind-value="{{currentValue}}" on-keydown="_keyDown" id="input" autocomplete="off"/>
-        <paper-icon-button suffix icon="arc:add-circle-outline" on-tap="_appendScope" title="Add scope"></paper-icon-button>
-        <paper-autocomplete target="[[_inputTarget]]" source="[[_normalizeScopes(allowedScopes)]]" on-selected="_suggestionSelected" open-on-focus></paper-input-autocomplete>
+        <label slot="label">Scope value</label>
+        <input slot="input" bind-value="{{currentValue}}" on-keydown="_keyDown" autocomplete="off" title="Enter authorization scopes for this API endpoint. Check your provider's documentation for more information about scopes."/>
+        <paper-icon-button slot="suffix" icon="arc:add-circle-outline" on-tap="_appendScope" title="Add scope"></paper-icon-button>
       </paper-input-container>
-      <paper-tooltip for="input" position="bottom">Enter authorization scopes for this API endpoint. Check your provider's documentation for more information about scopes.</paper-tooltip>
+      <paper-autocomplete target="[[_inputTarget]]" source="[[_normalizeScopes(allowedScopes)]]" on-selected="_suggestionSelected" open-on-focus></paper-input-autocomplete>
       <section class="scopes-list" role="list">
         <template is="dom-repeat" items="[[scopes]]">
           <div class="scope-item" two-line$="[[_allowedIsObject]]">
