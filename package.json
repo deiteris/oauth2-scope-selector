@@ -17,7 +17,6 @@
     "lint": "polymer lint oauth2-scope-selector.html",
     "test-sauce": "polymer test --plugin sauce --job-name \"oauth2-scope-selector:local-test\"",
     "test": "polymer test --plugin local --job-name \"oauth2-scope-selector:local-test\"",
-    "deps": "npm install --quiet && bower install --quiet",
     "update-types": "gen-typescript-declarations --deleteExisting --outDir ."
   },
   "repository": {

@@ -13,63 +13,89 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
-
-  <title>oauth2-scope-selector demo</title>
-
+  <title>OAuth2 scope selector demo</title>
   <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-
+  <link rel="import" href="../../polymer/lib/elements/dom-bind.html">
   <link rel="import" href="../../iron-demo-helpers/demo-pages-shared-styles.html">
-  <link rel="import" href="../../arc-demo-helpers/arc-demo-snippet.html">
-
+  <link rel="import" href="../../iron-demo-helpers/demo-snippet.html">
+  <link rel="import" href="../../iron-form/iron-form.html">
   <link rel="import" href="../oauth2-scope-selector.html">
-
-  <style is="custom-style" include="demo-pages-shared-styles">
-  :root {
-    --arc-font-body1: {
-      @apply(--paper-font-body1);
+  <custom-style>
+    <style is="custom-style" include="demo-pages-shared-styles">
+    :root {
+      --accent-color: #FF5040;
+      --arc-font-body1: {
+        @apply --paper-font-body1;
+      };
     }
-    --accent-color: #FF5040;
-  }
-
-  .vertical-section-container {
-    max-width: 600px;
-  }
-  </style>
+    output {
+      display: block;
+      margin-top: 20px;
+      padding: 0.73em 0.54em;
+      border: 1px grey solid;
+    }
+    </style>
+  </custom-style>
 </head>
 <body unresolved>
   <div class="vertical-section-container centered">
-    <h3>The `oauth2-scope-selector`</h3>
-    <arc-demo-snippet>
+    <h3>Validation and value</h3>
+    <demo-snippet>
+      <dom-bind>
+        <template is="dom-bind">
+          <oauth2-scope-selector required auto-validate invalid="{{invalid}}" value="{{value}}"></oauth2-scope-selector>
+          <h4>Produced value (array)</h4>
+          <output>[[value]]</output>
+          <h4>Validation state</h4>
+          <output>Inavlid value is: [[invalid]]</output>
+        </template>
+      </dom-bind>
+    </demo-snippet>
+
+    <h3>Manual validation</h3>
+    <demo-snippet>
       <template>
-        <oauth2-scope-selector></oauth2-scope-selector>
+        <iron-form id="form">
+          <form enctype="application/x-www-form-urlencoded" method="post">
+            <oauth2-scope-selector name="scope" required></oauth2-scope-selector>
+          </form>
+        </iron-form>
+        <button id="manualValidation">Validate</button>
+        <script>
+        const button = document.getElementById('manualValidation');
+        button.addEventListener('click', () => {
+          const form = document.getElementById('form');
+          form.validate();
+        });
+        </script>
       </template>
-    </arc-demo-snippet>
+    </demo-snippet>
 
     <h3>With predefined scopes</h3>
-    <arc-demo-snippet scopes='["user", "user:email", "user:follow", "public_repo", "repo", "repo_deployment", "repo:status", "delete_repo", "notifications", "gist", "read:repo_hook", "write:repo_hook", "admin:repo_hook", "admin:org_hook", "read:org", "write:org", "admin:org", "read:public_key", "write:public_key", "admin:public_key", "read:gpg_key", "write:gpg_key", "admin:gpg_key"]'>
+    <demo-snippet>
       <template>
-        <oauth2-scope-selector allowed-scopes="[[scopes]]"></oauth2-scope-selector>
+        <oauth2-scope-selector allowed-scopes='["user", "user:email", "user:follow", "public_repo", "repo", "repo_deployment", "repo:status", "delete_repo", "notifications", "gist", "read:repo_hook", "write:repo_hook", "admin:repo_hook", "admin:org_hook", "read:org", "write:org", "admin:org", "read:public_key", "write:public_key", "admin:public_key", "read:gpg_key", "write:gpg_key", "admin:gpg_key"]'></oauth2-scope-selector>
       </template>
-    </arc-demo-snippet>
+    </demo-snippet>
 
     <h3>Allow only pre-defined scopes</h3>
-    <arc-demo-snippet scopes='["user", "user:email", "user:follow", "public_repo", "repo", "repo_deployment", "repo:status", "delete_repo", "notifications", "gist", "read:repo_hook", "write:repo_hook", "admin:repo_hook", "admin:org_hook", "read:org", "write:org", "admin:org", "read:public_key", "write:public_key", "admin:public_key", "read:gpg_key", "write:gpg_key", "admin:gpg_key"]'>
+    <demo-snippet>
       <template>
-        <h4>Select GitHub scope.</h4>
-        <oauth2-scope-selector allowed-scopes="[[scopes]]" prevent-custom-scopes></oauth2-scope-selector>
+        <h4>Select GitHub scope only</h4>
+        <oauth2-scope-selector prevent-custom-scopes allowed-scopes='["user", "user:email", "user:follow", "public_repo", "repo", "repo_deployment", "repo:status", "delete_repo", "notifications", "gist", "read:repo_hook", "write:repo_hook", "admin:repo_hook", "admin:org_hook", "read:org", "write:org", "admin:org", "read:public_key", "write:public_key", "admin:public_key", "read:gpg_key", "write:gpg_key", "admin:gpg_key"]'></oauth2-scope-selector>
       </template>
-    </arc-demo-snippet>
+    </demo-snippet>
 
     <h3>Pre-selected scopes</h3>
-    <arc-demo-snippet selected='["user:email", "public_repo"]' scopes='["user", "user:email", "user:follow", "public_repo", "repo", "repo_deployment", "repo:status", "delete_repo", "notifications", "gist", "read:repo_hook", "write:repo_hook", "admin:repo_hook", "admin:org_hook", "read:org", "write:org", "admin:org", "read:public_key", "write:public_key", "admin:public_key", "read:gpg_key", "write:gpg_key", "admin:gpg_key"]'>
+    <demo-snippet>
       <template>
-        <h4>Select GitHub scope.</h4>
-        <oauth2-scope-selector allowed-scopes="[[scopes]]" scopes="{{selected}}" prevent-custom-scopes></oauth2-scope-selector>
+        <h4>Select GitHub scope only</h4>
+        <oauth2-scope-selector prevent-custom-scopes value='["user:email", "public_repo"]' allowed-scopes='["user", "user:email", "user:follow", "public_repo", "repo", "repo_deployment", "repo:status", "delete_repo", "notifications", "gist", "read:repo_hook", "write:repo_hook", "admin:repo_hook", "admin:org_hook", "read:org", "write:org", "admin:org", "read:public_key", "write:public_key", "admin:public_key", "read:gpg_key", "write:gpg_key", "admin:gpg_key"]'></oauth2-scope-selector>
       </template>
-    </arc-demo-snippet>
+    </demo-snippet>
 
     <h3>With description</h3>
-    <arc-demo-snippet>
+    <demo-snippet>
       <template>
         <oauth2-scope-selector id="withDescription" prevent-custom-scopes></oauth2-scope-selector>
         <script>
@@ -99,12 +125,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           {'label': 'write:gpg_key', 'description': 'Create, list, and view details for GPG keys.'},
           {'label': 'admin:gpg_key', 'description': 'Fully manage GPG keys.'}
         ];
-        var element = document.getElementById('withDescription');
+        const element = document.getElementById('withDescription');
         element.allowedScopes = scopes;
-        element.scopes = ['user:email', 'public_repo'];
+        element.value = ['user:email', 'public_repo'];
         </script>
       </template>
-    </arc-demo-snippet>
+    </demo-snippet>
   </div>
 </body>
 </html>

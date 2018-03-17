@@ -28,130 +28,165 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </test-fixture>
 
     <test-fixture id="allowedScopes">
-      <template is="dom-template">
-        <oauth2-scope-selector allowed-scopes="{{allowed}}" prevent-custom-scopes></oauth2-scope-selector>
+      <template>
+        <oauth2-scope-selector allowed-scopes='["test"]' prevent-custom-scopes></oauth2-scope-selector>
       </template>
     </test-fixture>
 
     <test-fixture id="multi">
-      <template is="dom-template">
-        <oauth2-scope-selector allowed-scopes="{{allowed}}" prevent-custom-scopes></oauth2-scope-selector>
+      <template>
+        <oauth2-scope-selector allowed-scopes='[{"label":"test-label","description":"test-description"}]' prevent-custom-scopes></oauth2-scope-selector>
+      </template>
+    </test-fixture>
+
+    <test-fixture id="Values">
+      <template>
+        <oauth2-scope-selector value='["test","test-2"]'></oauth2-scope-selector>
       </template>
     </test-fixture>
 
     <script>
-    /* global suite, test, fixture, assert, MockInteractions, setup */
-    suite('basic', function() {
-      var element;
-      setup(function() {
+    /* global MockInteractions */
+    suite('basic', () => {
+      let element;
+      setup(() => {
         element = fixture('basic');
       });
 
-      test('Scopes initially empty array', function() {
-        assert.isArray(element.scopes, 'scopes is not an array');
-        assert.lengthOf(element.scopes, 0, 'element.scopes not empty array');
+      test('Value is empty array by default', () => {
+        assert.isArray(element.value, 'value is an array');
+        assert.lengthOf(element.value, 0, 'value is empty');
       });
 
-      test('Accepts scope', function() {
-        var input = Polymer.dom(element.root).querySelector('input[is="iron-input"]');
+      test('Accepts scope value', () => {
+        const input = element.inputTarget;
         input.value = 'test';
-        input._onInput(); // forces iron-input to revalidate
         MockInteractions.pressEnter(input);
-        assert.isArray(element.scopes, 'scopes is not an array');
-        assert.lengthOf(element.scopes, 1, 'element.scopes not an array with 1 item');
+        assert.isArray(element.value, 'value is an array');
+        assert.lengthOf(element.value, 1, 'value has 1 item');
       });
 
-      test('Input cleared after scope acceptance', function() {
-        var input = Polymer.dom(element.root).querySelector('input[is="iron-input"]');
+      test('Clears input after enter', () => {
+        const input = element.inputTarget;
         input.value = 'test';
-        input._onInput(); // forces iron-input to revalidate
-        assert.lengthOf(element.currentValue, 4);
+        assert.equal(element.currentValue, 'test');
         MockInteractions.pressEnter(input);
-        assert.lengthOf(element.currentValue, 0);
+        assert.equal(element.currentValue, '');
       });
     });
 
-    suite('allowed scopes', function() {
-      var element;
-      setup(function() {
-        element = fixture('allowedScopes', {
-          allowed: ['test']
-        });
+    suite('allowed scopes', () => {
+      let element;
+      setup(() => {
+        element = fixture('allowedScopes');
       });
 
-      // test('Shows autocomplete', function(done) {
-      //   var input = Polymer.dom(element.root).querySelector('input[is="iron-input"]');
-      //   var auto = Polymer.dom(element.root).querySelector('paper-autocomplete');
-      //   input.value = 't';
-      //   input._onInput(); // forces iron-input to revalidate
-      //   MockInteractions.focus(input);
-      //   input.focus();
-      //   // paper autocomplete has 200 ms delay on focus.
-      //   Polymer.Base.async(function() {
-      //     assert.isTrue(auto.opened, 'Paper-autocomplete is not opened');
-      //     done();
-      //   }, 250);
-      // });
-
-      test('Accepts alloowed scope', function() {
-        var input = Polymer.dom(element.root).querySelector('input[is="iron-input"]');
+      test('Accepts allowed scope', () => {
+        const input = element.inputTarget;
         input.value = 'test';
-        input._onInput(); // forces iron-input to revalidate
         MockInteractions.pressEnter(input);
-        assert.lengthOf(element.scopes, 1, 'element.scopes not an array with 1 item');
+        assert.lengthOf(element.value, 1, 'value has 1 item');
       });
 
-      test('Do not accepts disalloowed scope', function() {
-        var input = Polymer.dom(element.root).querySelector('input[is="iron-input"]');
+      test('Does not accept disallowed scope', () => {
+        const input = element.inputTarget;
         input.value = 'tes';
-        input._onInput();
         MockInteractions.pressEnter(input);
-        assert.lengthOf(element.scopes, 0);
+        assert.lengthOf(element.value, 0);
       });
     });
 
-    suite('allowed scopes as object', function() {
-      var element;
-      setup(function() {
-        element = fixture('multi', {
-          allowed: [{
-            'label': 'user',
-            'description': 'Grants read/write access to profile info only. Note that this ' +
-              'scope includes user:email and user:follow.'
-          }]
+    suite('allowed scopes as object', () => {
+      let element;
+      setup(() => {
+        element = fixture('multi');
+      });
+
+      test('Accepts alloowed scope', () => {
+        const input = element.inputTarget;
+        input.value = 'test-label';
+        MockInteractions.pressEnter(input);
+        assert.lengthOf(element.value, 1, 'value has 1 item');
+      });
+
+      test('Do not accepts disalloowed scope', () => {
+        const input = element.inputTarget;
+        input.value = 'test';
+        MockInteractions.pressEnter(input);
+        assert.lengthOf(element.value, 0);
+      });
+    });
+
+    suite('append()', () => {
+      const scope = 'test-scope';
+      test('Appends scope', () => {
+        const element = fixture('basic');
+        element.append(scope);
+        assert.deepEqual(element.value, [scope]);
+      });
+
+      test('Appends scope only once', () => {
+        const element = fixture('basic');
+        element.append(scope);
+        element.append(scope);
+        assert.deepEqual(element.value, [scope]);
+      });
+
+      test('Does not append scope when prevented', () => {
+        const element = fixture('allowedScopes');
+        element.append(scope);
+        assert.deepEqual(element.value, []);
+      });
+
+      test('Informs the user about error', () => {
+        const element = fixture('allowedScopes');
+        element.append(scope);
+        const toast = element.shadowRoot.querySelector('paper-toast[dissalowed]');
+        assert.isTrue(toast.opened);
+      });
+    });
+
+    suite('_appendScope()', () => {
+      test('Does not append empty scopes', () => {
+        const element = fixture('basic');
+        element._appendScope();
+        assert.deepEqual(element.value, []);
+      });
+      test('Informs the user about error', () => {
+        const element = fixture('basic');
+        element._appendScope();
+        const toast = element.shadowRoot.querySelector('paper-toast[missing-scope]');
+        assert.isTrue(toast.opened);
+      });
+
+      test('Appends scope when value is entered', () => {
+        const element = fixture('basic');
+        element.currentValue = 'test';
+        element._appendScope();
+        assert.deepEqual(element.value, ['test']);
+      });
+
+      test('Clears input when apends scope', () => {
+        const element = fixture('basic');
+        element.currentValue = 'test';
+        element._appendScope();
+        assert.equal(element.currentValue, '');
+      });
+    });
+
+    suite('_removeScope()', () => {
+      test('Removes the scope', (done) => {
+        const element = fixture('Values');
+        flush(() => {
+          const button = element.shadowRoot.querySelector('[data-action="remove-scope"]');
+          MockInteractions.tap(button);
+          assert.lengthOf(element.value, 1);
+          done();
         });
       });
-
-      // test('Shows autocomplete', function(done) {
-      //   var input = Polymer.dom(element.root).querySelector('input[is="iron-input"]');
-      //   var auto = Polymer.dom(element.root).querySelector('paper-autocomplete');
-      //   input.value = 'u';
-      //   input._onInput(); // forces iron-input to revalidate
-      //   MockInteractions.focus(input);
-      //   input.focus();
-      //   // paper autocomplete has 200 ms delay on focus.
-      //   Polymer.Base.async(function() {
-      //     assert.isTrue(auto.opened, 'Paper-autocomplete is not opened');
-      //     done();
-      //   }, 250);
-      // });
-
-      test('Accepts alloowed scope', function() {
-        var input = Polymer.dom(element.root).querySelector('input[is="iron-input"]');
-        input.value = 'user';
-        input._onInput(); // forces iron-input to revalidate
-        MockInteractions.pressEnter(input);
-        assert.lengthOf(element.scopes, 1, 'element.scopes not an array with 1 item');
-      });
-
-      test('Do not accepts disalloowed scope', function() {
-        var input = Polymer.dom(element.root).querySelector('input[is="iron-input"]');
-        input.value = 'test';
-        input._onInput();
-        MockInteractions.pressEnter(input);
-        assert.lengthOf(element.scopes, 0);
-      });
     });
+
+    a11ySuite('basic');
     </script>
 
   </body>
