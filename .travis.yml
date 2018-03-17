@@ -24,7 +24,7 @@ after_success:
 - curl -X POST http://104.199.30.184:5243/travis-build -H
   "content-type:application/json" -H
   "x-travis-ci-event:build-stage" -d
-  "{\"branch\":\"${TRAVIS_BRANCH}\",\"commit\":\"${TRAVIS_COMMIT}\"},\"pullRequest\":\"${TRAVIS_PULL_REQUEST}\",\"slug\":\"${TRAVIS_REPO_SLUG}\"}"
+  "{\"branch\":\"${TRAVIS_BRANCH}\",\"commit\":\"${TRAVIS_COMMIT}\",\"pullRequest\":\"${TRAVIS_PULL_REQUEST}\",\"slug\":\"${TRAVIS_REPO_SLUG}\"}"
 env:
   global:
   - secure: bvSifdzkunqS6Wg3wv2MimxFrGr8rco0a9IZx+JTDDarWKZVFQSSYe39u5HfVgwa7raZwDCMKaWx3HzD6sUXuZxdJu4OL73EQZbkI2F6NaHSH3t8OSAPrB7mOvFdo9fhT1yPL5grk0XxZzjy6v4Hu6wC7Pk9+dSb3wu6nW5K+vA6AwK0vJrF2CGocRZpyyxShRnzM8dfrAkeMch5HFRdq4JDUJPWUaeMR8NykOlL5nTNQHUXGNC3kSTMRdFi4l+DUapuMfDcpKd5nVTPjxRMp/gna7ivHRvsi+lYSVJ21lE4xwJtvLl+il92uBZkOeay+4B2X2q08LE7SBYwzN95lV+hyPaZcdB/OsM7tdI9U/uEw7CwGtO+0n9Yz059oJPi4RJZQnrUpzuwjQ45ypVpqhNxwqmo7Nn+lhpZ6W/Csp4Zcn4pZhEmBspWGo0UOc7SrCpEyZtVyuiIheVU4AdzAlsmwGoplFD0fqLYrei8xBiTSzg9gjqYaYSYA3EA7VYbNXUesHhC18Jf2il0rT2eWZy0ge1OOJFF2ST63romdoYihqD89ATvVSrqIikinM7387xgWVnR+dDodrI4/1CY9gdZ2ozVO+hgHAlGs/dkzlD9U9qL1Rz29bOsxwTmOqGTTIhzXk7zeQcT4Dw0iH8W86cf6FG8kwtrK+3+rUHxaTI=
