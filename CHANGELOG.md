@@ -1,3 +1,9 @@
+<a name="2.0.1"></a>
+## [2.0.1](https://github.com/advanced-rest-client/oauth2-scope-selector/compare/1.0.6...2.0.1) (2018-03-17)
+
+
+
+
 <a name="1.0.6"></a>
 ## [1.0.6](https://github.com/advanced-rest-client/oauth2-scope-selector/compare/1.0.5...v1.0.6) (2017-03-02)
 
