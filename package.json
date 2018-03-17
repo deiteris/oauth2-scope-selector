@@ -1,5 +1,5 @@
 {
-  "name": "@arc-components/oauth2-scope-selector",
+  "name": "@api-components/oauth2-scope-selector",
   "license": "Apache-2.0",
   "description": "A selector for the OAuth scope. It provides an UI to enter a scope for the AOuth settings",
   "version": "2.0.0-preview",
