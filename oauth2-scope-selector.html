@@ -113,8 +113,8 @@ Custom property | Description | Default
 `--icon-button` | Mixin applied to `paper-icon-buttons`. | `{}`
 `--icon-button-hover` | Mixin applied to `paper-icon-buttons` when hovered. | `{}`
 `--form-label` | Mixin applied to all labels that are form elements | `{}`
-`--hint-trigger-color` | Color of the add and remove scope buttons | `rgba(0, 0, 0, 0.74)`
-`--hint-trigger-color` | Color of the add and remove scope buttons when hovered | `rgba(0, 0, 0, 0.84)`
+`--api-form-action-icon-color` | Color of the add and remove scope buttons | `rgba(0, 0, 0, 0.74)`
+`--api-form-action-icon-hover-color` | Color of the add and remove scope buttons when hovered | `rgba(0, 0, 0, 0.84)`
 
 @customElement
 @polymer
@@ -148,14 +148,17 @@ Custom property | Description | Default
       position: relative;
     }
 
-    paper-icon-button {
-      color: var(--hint-trigger-color, rgba(0, 0, 0, 0.74));
+    .add-button,
+    .delete-icon {
+      color: var(--api-form-action-icon-color, rgba(0, 0, 0, 0.74));
       transition: color 0.25s linear;
+      margin-left: 8px;
       @apply --icon-button;
     }
 
-    paper-icon-button:hover {
-      color: var(--hint-trigger-hover-color, rgba(0, 0, 0, 0.84));
+    .add-button:hover,
+    .delete-icon:hover {
+      color: var(--api-form-action-icon-hover-color, rgba(0, 0, 0, 0.84));
       @apply --icon-button-hover;
     }
 
@@ -165,7 +168,6 @@ Custom property | Description | Default
     }
 
     .scope-display {
-      @apply --layout-flex;
       overflow: hidden;
       @apply --arc-font-body1;
       font-size: 16px;
@@ -196,7 +198,7 @@ Custom property | Description | Default
       <label class="form-label">Scopes</label>
       <div class="input-container">
         <paper-input name="[[name]]" no-label-float invalid="[[invalid]]" label="Scope value" class="scope-input" value="{{currentValue}}" on-keydown="_keyDown" autocomplete="off" title="Enter authorization scopes for this API endpoint. Check your provider's documentation for more information about scopes.">
-          <paper-icon-button data-action="add-scope" slot="suffix" icon="arc:add-circle-outline" on-tap="_appendScope" title="Add scope"></paper-icon-button>
+          <paper-icon-button class="add-button" data-action="add-scope" slot="suffix" icon="arc:add-circle-outline" on-tap="_appendScope" title="Add scope"></paper-icon-button>
         </paper-input>
         <template is="dom-if" if="[[hasAutocomplete]]">
           <paper-autocomplete target="[[inputTarget]]" source="[[_autocompleteScopes]]" on-selected="_suggestionSelected" open-on-focus></paper-autocomplete>
@@ -209,7 +211,7 @@ Custom property | Description | Default
               <div class="scope-item-label">[[item]]</div>
               <div secondary>[[_computeItemDescription(item, _allowedIsObject)]]</div>
             </div>
-            <paper-icon-button data-action="remove-scope" icon="arc:remove-circle-outline" on-tap="_removeScope" title="Remove scope"></paper-icon-button>
+            <paper-icon-button class="delete-icon" data-action="remove-scope" icon="arc:remove-circle-outline" on-tap="_removeScope" title="Remove scope"></paper-icon-button>
           </div>
         </template>
       </section>
