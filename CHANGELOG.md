@@ -1,3 +1,13 @@
+<a name="2.0.2"></a>
+## [2.0.2](https://github.com/advanced-rest-client/oauth2-scope-selector/compare/1.0.6...2.0.2) (2018-06-19)
+
+
+### Update
+
+* Updating styles and styling API ([1aff7489b4f34a27224019c3dfd75aa1ac5c42b9](https://github.com/advanced-rest-client/oauth2-scope-selector/commit/1aff7489b4f34a27224019c3dfd75aa1ac5c42b9))
+
+
+
 <a name="2.0.1"></a>
 ## [2.0.1](https://github.com/advanced-rest-client/oauth2-scope-selector/compare/1.0.6...2.0.1) (2018-03-17)
 
