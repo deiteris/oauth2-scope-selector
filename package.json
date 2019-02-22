@@ -10,7 +10,7 @@
     "type": "git",
     "url": "git://github.com/advanced-rest-client/oauth2-scope-selector.git"
   },
-  "name": "@api-components/oauth2-scope-selector",
+  "name": "@advanced-rest-client/oauth2-scope-selector",
   "license": "Apache-2.0",
   "version": "3.0.0-preview.1",
   "authors": [
