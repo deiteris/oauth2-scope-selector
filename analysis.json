@@ -2,188 +2,202 @@
   "schema_version": "1.0.0",
   "elements": [
     {
-      "description": "A selector for OAuth 2.0 scope. Provides the UI to enter a scope for OAuth 2.0 settings.\n\n#### Example\n\n```html\n<oauth2-scope-selector></oauth2-scope-selector>\n```\n\n`allowed-scopes` attribute allows to provide a list of predefined scopes\nsupported by the endpoint. When the list is set, autocomplete is enabled.\nAutocomplete is supported by `paper-autocomplete` element.\n\nSetting `prevent-custom-scopes` dissallows adding a scope that is not defined\nin the `allowed-scopes` array. This can only work with `allowed-scopes` set\n\n#### Example\n\n```html\n<oauth2-scope-selector prevent-custom-scopes allowed-scopes='[\"email\", \"profile\"]'></oauth2-scope-selector>\n```\n\nAnd in JavaScript\n\n```javascript\nvar selector = document.querySelector('oauth2-scope-selector');\nselector.allowedScopes = ['profile', 'email'];\n```\n\n## Adding scope documentation\n\n`allowedScopes` property can be an list of object to present scope description\nafter it is selected. Object in the array has to contain `label` and `description` properties.\n`label` is scope value.\n\n### Example\n\n```javascript\nvar scopes = [\n  {'label': 'user', 'description': 'Grants read/write access to profile info only. Note that this scope includes user:email and user:follow.'},\n  {'label': 'user:email', 'description': 'Grants read access to a user\\'s email addresses.'},\n  {'label': 'user:follow', 'description': 'Grants access to follow or unfollow other users.'}\n];\nconst selector = document.querySelector('oauth2-scope-selector');\nselector.allowedScopes = scopes;\n```\n\nSee demo page for example implementation.\n\n## Use with forms\n\nThe element can be used in a form by using `iron-form` custom element.\nIt's value is reported to the form as any other form input. `name` attribute\nmust be set in order to process the value.\n\n```html\n<iron-form id=\"form\">\n  <form>\n    <oauth2-scope-selector name=\"scope\" required></oauth2-scope-selector>\n  </form>\n</iron-form>\n<script>\nconst form = document.getElementById('form');\nconst values = form.serializeForm();\nconsole.log(values); // {\"scope\": []}\n</script>\n```\n\n## Changes in version 2\n\n- `scopes` property is renamed to `value`\n- The element can now work with `iron-form` as a form element.\n\n### Styling\n`<oauth2-scope-selector>` provides the following custom properties and mixins for styling:\n\nCustom property | Description | Default\n----------------|-------------|----------\n`--oauth2-scope-selector` | Mixin applied to the element | `{}`\n`--oauth2-scope-selector-label` | Mixin applied to the label element (title of the control) | `{}`\n`--oauth2-scope-selector-list-item` | Mixin applied to each selected scope item. Consider setting `paper-item` styles for theming. | `{}`\n`--oauth2-scope-selector-item-description-color` | Color of the description of the scope when `allowedScopes` contains description. | `#737373`\n\n### Theming\nUse this mixins as a theming option across all ARC elements.\n\nCustom property | Description | Default\n----------------|-------------|----------\n`--icon-button` | Mixin applied to `paper-icon-buttons`. | `{}`\n`--icon-button-hover` | Mixin applied to `paper-icon-buttons` when hovered. | `{}`\n`--form-label` | Mixin applied to all labels that are form elements | `{}`\n`--hint-trigger-color` | Color of the add and remove scope buttons | `rgba(0, 0, 0, 0.74)`\n`--hint-trigger-color` | Color of the add and remove scope buttons when hovered | `rgba(0, 0, 0, 0.84)`",
+      "description": "A selector for OAuth 2.0 scope. Provides the UI to enter a scope for OAuth 2.0 settings.\n\n#### Example\n\n```html\n<oauth2-scope-selector></oauth2-scope-selector>\n```\n\n`allowed-scopes` attribute allows to provide a list of predefined scopes\nsupported by the endpoint. When the list is set, autocomplete is enabled.\nAutocomplete is supported by `paper-autocomplete` element.\n\nSetting `prevent-custom-scopes` dissallows adding a scope that is not defined\nin the `allowed-scopes` array. This can only work with `allowed-scopes` set\n\n#### Example\n\n```html\n<oauth2-scope-selector prevent-custom-scopes allowed-scopes='[\"email\", \"profile\"]'></oauth2-scope-selector>\n```\n\nAnd in JavaScript\n\n```javascript\nvar selector = document.querySelector('oauth2-scope-selector');\nselector.allowedScopes = ['profile', 'email'];\n```\n\n## Adding scope documentation\n\n`allowedScopes` property can be an list of object to present scope description\nafter it is selected. Object in the array has to contain `label` and `description` properties.\n`label` is scope value.\n\n### Example\n\n```javascript\nconst scopes = [\n  {\n    'label': 'user',\n    'description': 'Grants read/write access to profile info only. Note that this scope includes user:email and user:follow.'\n  },\n  {'label': 'user:email', 'description': 'Grants read access to a user\\'s email addresses.'},\n  {'label': 'user:follow', 'description': 'Grants access to follow or unfollow other users.'}\n];\nconst selector = document.querySelector('oauth2-scope-selector');\nselector.allowedScopes = scopes;\n```\n\nSee demo page for example implementation.\n\n## Use with forms\n\nThe element can be used in a form by using `iron-form` custom element.\nIt's value is reported to the form as any other form input. `name` attribute\nmust be set in order to process the value.\n\n```html\n<iron-form id=\"form\">\n  <form>\n    <oauth2-scope-selector name=\"scope\" required></oauth2-scope-selector>\n  </form>\n</iron-form>\n<script>\nconst form = document.getElementById('form');\nconst values = form.serializeForm();\nconsole.log(values); // {\"scope\": []}\n</script>\n```\n\n## Changes in version 2\n\n- `scopes` property is renamed to `value`\n- The element can now work with `iron-form` as a form element.\n\n### Styling\n`<oauth2-scope-selector>` provides the following custom properties and mixins for styling:\n\nCustom property | Description | Default\n----------------|-------------|----------\n`--oauth2-scope-selector` | Mixin applied to the element | `{}`\n`--oauth2-scope-selector-label` | Mixin applied to the label element (title of the control) | `{}`\n`--oauth2-scope-selector-list-item` | Mixin applied to each selected scope item. Consider setting `paper-item` styles for theming. | `{}`\n`--oauth2-scope-selector-item-description-color` | Color of the description of the scope when `allowedScopes` contains description. | `#737373`\n\n### Theming\nUse this mixins as a theming option across all ARC elements.\n\nCustom property | Description | Default\n----------------|-------------|----------\n`--icon-button` | Mixin applied to `paper-icon-buttons`. | `{}`\n`--icon-button-hover` | Mixin applied to `paper-icon-buttons` when hovered. | `{}`\n`--form-label` | Mixin applied to all labels that are form elements | `{}`\n`--api-form-action-icon-color` | Color of the add and remove scope buttons | `rgba(0, 0, 0, 0.74)`\n`--api-form-action-icon-hover-color` | Color of the add and remove scope buttons when hovered | `rgba(0, 0, 0, 0.84)`",
       "summary": "",
-      "path": "oauth2-scope-selector.html",
+      "path": "oauth2-scope-selector.js",
       "properties": [
         {
           "name": "value",
-          "type": "Array",
+          "type": "Array | null | undefined",
           "description": "List of scopes entered by the user. It can be used it pre-select scopes\nby providing an array with scope values.",
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 233,
-              "column": 8
+              "line": 244,
+              "column": 6
             },
             "end": {
-              "line": 239,
-              "column": 9
+              "line": 250,
+              "column": 7
             }
           },
           "metadata": {
             "polymer": {
-              "notify": true
+              "notify": true,
+              "attributeType": "Array"
             }
           },
           "defaultValue": "[]"
         },
         {
           "name": "name",
-          "type": "string",
+          "type": "string | null | undefined",
           "description": "Form input name",
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 243,
-              "column": 8
-            },
-            "end": {
-              "line": 243,
-              "column": 20
-            }
-          },
-          "metadata": {
-            "polymer": {}
-          }
-        },
-        {
-          "name": "currentValue",
-          "type": "string",
-          "description": "Current value entered by the user. This is not a scope and it is not\nyet in the scopes list. User has to accept the scope before it become\navailable in the scopes list.",
-          "privacy": "public",
-          "sourceRange": {
-            "start": {
-              "line": 249,
-              "column": 8
-            },
-            "end": {
-              "line": 249,
-              "column": 28
-            }
-          },
-          "metadata": {
-            "polymer": {}
-          }
-        },
-        {
-          "name": "inputTarget",
-          "type": "HTMLElement",
-          "description": "Target for `paper-autocomplete`",
-          "privacy": "public",
-          "sourceRange": {
-            "start": {
-              "line": 251,
-              "column": 8
+              "line": 254,
+              "column": 6
             },
             "end": {
               "line": 254,
-              "column": 9
+              "column": 18
             }
           },
           "metadata": {
             "polymer": {
-              "readOnly": true
+              "attributeType": "String"
+            }
+          }
+        },
+        {
+          "name": "currentValue",
+          "type": "string | null | undefined",
+          "description": "Current value entered by the user. This is not a scope and it is not\nyet in the scopes list. User has to accept the scope before it become\navailable in the scopes list.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 260,
+              "column": 6
+            },
+            "end": {
+              "line": 260,
+              "column": 26
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "attributeType": "String"
+            }
+          }
+        },
+        {
+          "name": "inputTarget",
+          "type": "HTMLElement | null | undefined",
+          "description": "Target for `paper-autocomplete`",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 262,
+              "column": 6
+            },
+            "end": {
+              "line": 265,
+              "column": 7
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "readOnly": true,
+              "attributeType": "HTMLElement"
             }
           }
         },
         {
           "name": "allowedScopes",
-          "type": "Array",
+          "type": "Array | null | undefined",
           "description": "List of available scopes.\nIt can be either list of string or list of object. If this is the\nlist of object then this expects to each object contain a `label`\nand `description` keys.\n\n### Example\n```\n{\n  'label': 'user',\n  'description': 'Grants read/write access to profile info only. '\n}\n```\nWhen the description is provided it will be displayed below the name\nof the scope.",
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 271,
-              "column": 8
+              "line": 282,
+              "column": 6
             },
             "end": {
-              "line": 271,
-              "column": 28
-            }
-          },
-          "metadata": {
-            "polymer": {}
-          }
-        },
-        {
-          "name": "preventCustomScopes",
-          "type": "boolean",
-          "description": "allowed to be add.",
-          "privacy": "public",
-          "sourceRange": {
-            "start": {
-              "line": 274,
-              "column": 8
-            },
-            "end": {
-              "line": 274,
-              "column": 36
-            }
-          },
-          "metadata": {
-            "polymer": {}
-          }
-        },
-        {
-          "name": "_allowedIsObject",
-          "type": "boolean",
-          "description": "Computed value, true if the `allowedScopes` is a list of objects",
-          "privacy": "protected",
-          "sourceRange": {
-            "start": {
-              "line": 276,
-              "column": 8
-            },
-            "end": {
-              "line": 280,
-              "column": 9
+              "line": 282,
+              "column": 26
             }
           },
           "metadata": {
             "polymer": {
-              "readOnly": true
+              "attributeType": "Array"
+            }
+          }
+        },
+        {
+          "name": "preventCustomScopes",
+          "type": "boolean | null | undefined",
+          "description": "allowed to be add.",
+          "privacy": "public",
+          "sourceRange": {
+            "start": {
+              "line": 285,
+              "column": 6
+            },
+            "end": {
+              "line": 285,
+              "column": 34
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "attributeType": "Boolean"
+            }
+          }
+        },
+        {
+          "name": "_allowedIsObject",
+          "type": "boolean | null | undefined",
+          "description": "Computed value, true if the `allowedScopes` is a list of objects",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 287,
+              "column": 6
+            },
+            "end": {
+              "line": 291,
+              "column": 7
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "readOnly": true,
+              "attributeType": "Boolean"
             }
           },
           "defaultValue": "false"
         },
         {
           "name": "autoValidate",
-          "type": "boolean",
+          "type": "boolean | null | undefined",
           "description": "Set to true to auto-validate the input value when it changes.",
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 284,
-              "column": 8
+              "line": 295,
+              "column": 6
             },
             "end": {
-              "line": 284,
-              "column": 29
-            }
-          },
-          "metadata": {
-            "polymer": {}
-          }
-        },
-        {
-          "name": "_autocompleteScopes",
-          "type": "Array",
-          "description": "List of scopes to be set as autocomplete source.",
-          "privacy": "protected",
-          "sourceRange": {
-            "start": {
-              "line": 288,
-              "column": 8
-            },
-            "end": {
-              "line": 291,
-              "column": 9
+              "line": 295,
+              "column": 27
             }
           },
           "metadata": {
             "polymer": {
-              "readOnly": true
+              "attributeType": "Boolean"
+            }
+          }
+        },
+        {
+          "name": "_autocompleteScopes",
+          "type": "Array | null | undefined",
+          "description": "List of scopes to be set as autocomplete source.",
+          "privacy": "protected",
+          "sourceRange": {
+            "start": {
+              "line": 299,
+              "column": 6
+            },
+            "end": {
+              "line": 302,
+              "column": 7
+            }
+          },
+          "metadata": {
+            "polymer": {
+              "readOnly": true,
+              "attributeType": "Array"
             }
           }
         },
@@ -194,60 +208,64 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 297,
-              "column": 8
+              "line": 308,
+              "column": 6
             },
             "end": {
-              "line": 300,
-              "column": 9
+              "line": 311,
+              "column": 7
             }
           },
           "metadata": {
             "polymer": {
-              "readOnly": true
+              "readOnly": true,
+              "attributeType": "Boolean"
             }
           }
         },
         {
           "name": "invalid",
-          "type": "boolean",
+          "type": "boolean | null | undefined",
           "description": "Returns true if the value is invalid.\n\nIf `autoValidate` is true, the `invalid` attribute is managed automatically,\nwhich can clobber attempts to manage it manually.",
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 307,
-              "column": 8
+              "line": 318,
+              "column": 6
             },
             "end": {
-              "line": 313,
-              "column": 9
+              "line": 324,
+              "column": 7
             }
           },
           "metadata": {
             "polymer": {
               "notify": true,
-              "observer": "\"_invalidChanged\""
+              "observer": "\"_invalidChanged\"",
+              "attributeType": "Boolean"
             }
           },
           "defaultValue": "false"
         },
         {
           "name": "required",
-          "type": "boolean",
+          "type": "boolean | null | undefined",
           "description": "Set to true to mark the input as required.",
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 317,
-              "column": 8
+              "line": 328,
+              "column": 6
             },
             "end": {
-              "line": 320,
-              "column": 9
+              "line": 331,
+              "column": 7
             }
           },
           "metadata": {
-            "polymer": {}
+            "polymer": {
+              "attributeType": "Boolean"
+            }
           },
           "defaultValue": "false"
         }
@@ -259,16 +277,19 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 330,
-              "column": 4
+              "line": 341,
+              "column": 2
             },
             "end": {
-              "line": 334,
-              "column": 5
+              "line": 345,
+              "column": 3
             }
           },
           "metadata": {},
-          "params": []
+          "params": [],
+          "return": {
+            "type": "void"
+          }
         },
         {
           "name": "_invalidChanged",
@@ -276,12 +297,12 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 336,
-              "column": 4
+              "line": 347,
+              "column": 2
             },
             "end": {
-              "line": 338,
-              "column": 5
+              "line": 349,
+              "column": 3
             }
           },
           "metadata": {},
@@ -289,7 +310,10 @@
             {
               "name": "invalid"
             }
-          ]
+          ],
+          "return": {
+            "type": "void"
+          }
         },
         {
           "name": "_appendScope",
@@ -297,16 +321,19 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 341,
-              "column": 4
+              "line": 352,
+              "column": 2
             },
             "end": {
-              "line": 349,
-              "column": 5
+              "line": 360,
+              "column": 3
             }
           },
           "metadata": {},
-          "params": []
+          "params": [],
+          "return": {
+            "type": "void"
+          }
         },
         {
           "name": "_removeScope",
@@ -314,12 +341,12 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 351,
-              "column": 4
+              "line": 362,
+              "column": 2
             },
             "end": {
-              "line": 364,
-              "column": 5
+              "line": 375,
+              "column": 3
             }
           },
           "metadata": {},
@@ -327,7 +354,10 @@
             {
               "name": "e"
             }
-          ]
+          ],
+          "return": {
+            "type": "void"
+          }
         },
         {
           "name": "_suggestionSelected",
@@ -335,12 +365,12 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 370,
-              "column": 4
+              "line": 381,
+              "column": 2
             },
             "end": {
-              "line": 378,
-              "column": 5
+              "line": 389,
+              "column": 3
             }
           },
           "metadata": {},
@@ -349,7 +379,10 @@
               "name": "e",
               "type": "Event"
             }
-          ]
+          ],
+          "return": {
+            "type": "void"
+          }
         },
         {
           "name": "append",
@@ -357,12 +390,12 @@
           "privacy": "public",
           "sourceRange": {
             "start": {
-              "line": 385,
-              "column": 4
+              "line": 396,
+              "column": 2
             },
             "end": {
-              "line": 401,
-              "column": 5
+              "line": 412,
+              "column": 3
             }
           },
           "metadata": {},
@@ -372,7 +405,10 @@
               "type": "String",
               "description": "Scope value to append"
             }
-          ]
+          ],
+          "return": {
+            "type": "void"
+          }
         },
         {
           "name": "_findAllowedScopeIndex",
@@ -380,12 +416,12 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 408,
-              "column": 4
+              "line": 419,
+              "column": 2
             },
             "end": {
-              "line": 420,
-              "column": 5
+              "line": 431,
+              "column": 3
             }
           },
           "metadata": {},
@@ -407,12 +443,12 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 422,
-              "column": 4
+              "line": 433,
+              "column": 2
             },
             "end": {
-              "line": 432,
-              "column": 5
+              "line": 443,
+              "column": 3
             }
           },
           "metadata": {},
@@ -420,7 +456,10 @@
             {
               "name": "e"
             }
-          ]
+          ],
+          "return": {
+            "type": "void"
+          }
         },
         {
           "name": "_normalizeScopes",
@@ -428,12 +467,12 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 440,
-              "column": 4
+              "line": 451,
+              "column": 2
             },
             "end": {
-              "line": 453,
-              "column": 5
+              "line": 464,
+              "column": 3
             }
           },
           "metadata": {},
@@ -455,12 +494,12 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 460,
-              "column": 4
+              "line": 471,
+              "column": 2
             },
             "end": {
-              "line": 462,
-              "column": 5
+              "line": 473,
+              "column": 3
             }
           },
           "metadata": {},
@@ -482,20 +521,24 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 468,
-              "column": 4
+              "line": 481,
+              "column": 2
             },
             "end": {
-              "line": 474,
-              "column": 5
+              "line": 487,
+              "column": 3
             }
           },
           "metadata": {},
           "params": [
             {
-              "name": "allowedScopes"
+              "name": "allowedScopes",
+              "type": "(Array.<String> | Array.<Object>)"
             }
-          ]
+          ],
+          "return": {
+            "type": "Boolean"
+          }
         },
         {
           "name": "_computeItemDescription",
@@ -503,18 +546,20 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 483,
-              "column": 4
+              "line": 496,
+              "column": 2
             },
             "end": {
-              "line": 492,
-              "column": 5
+              "line": 505,
+              "column": 3
             }
           },
           "metadata": {},
           "params": [
             {
-              "name": "scope"
+              "name": "scope",
+              "type": "String",
+              "description": "Scope name"
             },
             {
               "name": "allowedIsObject",
@@ -533,12 +578,12 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 501,
-              "column": 4
+              "line": 514,
+              "column": 2
             },
             "end": {
-              "line": 504,
-              "column": 5
+              "line": 517,
+              "column": 3
             }
           },
           "metadata": {},
@@ -554,12 +599,12 @@
           "privacy": "protected",
           "sourceRange": {
             "start": {
-              "line": 506,
-              "column": 4
+              "line": 519,
+              "column": 2
             },
             "end": {
-              "line": 510,
-              "column": 5
+              "line": 523,
+              "column": 3
             }
           },
           "metadata": {},
@@ -567,7 +612,10 @@
             {
               "name": "autoValidate"
             }
-          ]
+          ],
+          "return": {
+            "type": "void"
+          }
         }
       ],
       "staticMethods": [],
@@ -580,141 +628,141 @@
       "metadata": {},
       "sourceRange": {
         "start": {
-          "line": 220,
-          "column": 2
+          "line": 128,
+          "column": 0
         },
         "end": {
-          "line": 511,
-          "column": 3
+          "line": 524,
+          "column": 1
         }
       },
       "privacy": "public",
       "superclass": "HTMLElement",
-      "name": "OAuth2ScopeSelector",
+      "name": "UiElements.OAuth2ScopeSelector",
       "attributes": [
         {
           "name": "value",
           "description": "List of scopes entered by the user. It can be used it pre-select scopes\nby providing an array with scope values.",
           "sourceRange": {
             "start": {
-              "line": 233,
-              "column": 8
+              "line": 244,
+              "column": 6
             },
             "end": {
-              "line": 239,
-              "column": 9
+              "line": 250,
+              "column": 7
             }
           },
           "metadata": {},
-          "type": "Array"
+          "type": "Array | null | undefined"
         },
         {
           "name": "name",
           "description": "Form input name",
           "sourceRange": {
             "start": {
-              "line": 243,
-              "column": 8
+              "line": 254,
+              "column": 6
             },
             "end": {
-              "line": 243,
-              "column": 20
+              "line": 254,
+              "column": 18
             }
           },
           "metadata": {},
-          "type": "string"
+          "type": "string | null | undefined"
         },
         {
           "name": "current-value",
           "description": "Current value entered by the user. This is not a scope and it is not\nyet in the scopes list. User has to accept the scope before it become\navailable in the scopes list.",
           "sourceRange": {
             "start": {
-              "line": 249,
-              "column": 8
+              "line": 260,
+              "column": 6
             },
             "end": {
-              "line": 249,
-              "column": 28
+              "line": 260,
+              "column": 26
             }
           },
           "metadata": {},
-          "type": "string"
+          "type": "string | null | undefined"
         },
         {
           "name": "input-target",
           "description": "Target for `paper-autocomplete`",
           "sourceRange": {
             "start": {
-              "line": 251,
-              "column": 8
+              "line": 262,
+              "column": 6
             },
             "end": {
-              "line": 254,
-              "column": 9
+              "line": 265,
+              "column": 7
             }
           },
           "metadata": {},
-          "type": "HTMLElement"
+          "type": "HTMLElement | null | undefined"
         },
         {
           "name": "allowed-scopes",
           "description": "List of available scopes.\nIt can be either list of string or list of object. If this is the\nlist of object then this expects to each object contain a `label`\nand `description` keys.\n\n### Example\n```\n{\n  'label': 'user',\n  'description': 'Grants read/write access to profile info only. '\n}\n```\nWhen the description is provided it will be displayed below the name\nof the scope.",
           "sourceRange": {
             "start": {
-              "line": 271,
-              "column": 8
+              "line": 282,
+              "column": 6
             },
             "end": {
-              "line": 271,
-              "column": 28
+              "line": 282,
+              "column": 26
             }
           },
           "metadata": {},
-          "type": "Array"
+          "type": "Array | null | undefined"
         },
         {
           "name": "prevent-custom-scopes",
           "description": "allowed to be add.",
           "sourceRange": {
             "start": {
-              "line": 274,
-              "column": 8
+              "line": 285,
+              "column": 6
             },
             "end": {
-              "line": 274,
-              "column": 36
+              "line": 285,
+              "column": 34
             }
           },
           "metadata": {},
-          "type": "boolean"
+          "type": "boolean | null | undefined"
         },
         {
           "name": "auto-validate",
           "description": "Set to true to auto-validate the input value when it changes.",
           "sourceRange": {
             "start": {
-              "line": 284,
-              "column": 8
+              "line": 295,
+              "column": 6
             },
             "end": {
-              "line": 284,
-              "column": 29
+              "line": 295,
+              "column": 27
             }
           },
           "metadata": {},
-          "type": "boolean"
+          "type": "boolean | null | undefined"
         },
         {
           "name": "has-autocomplete",
           "description": "True if the element has attached autocomplete element.",
           "sourceRange": {
             "start": {
-              "line": 297,
-              "column": 8
+              "line": 308,
+              "column": 6
             },
             "end": {
-              "line": 300,
-              "column": 9
+              "line": 311,
+              "column": 7
             }
           },
           "metadata": {},
@@ -725,32 +773,32 @@
           "description": "Returns true if the value is invalid.\n\nIf `autoValidate` is true, the `invalid` attribute is managed automatically,\nwhich can clobber attempts to manage it manually.",
           "sourceRange": {
             "start": {
-              "line": 307,
-              "column": 8
+              "line": 318,
+              "column": 6
             },
             "end": {
-              "line": 313,
-              "column": 9
+              "line": 324,
+              "column": 7
             }
           },
           "metadata": {},
-          "type": "boolean"
+          "type": "boolean | null | undefined"
         },
         {
           "name": "required",
           "description": "Set to true to mark the input as required.",
           "sourceRange": {
             "start": {
-              "line": 317,
-              "column": 8
+              "line": 328,
+              "column": 6
             },
             "end": {
-              "line": 320,
-              "column": 9
+              "line": 331,
+              "column": 7
             }
           },
           "metadata": {},
-          "type": "boolean"
+          "type": "boolean | null | undefined"
         }
       ],
       "events": [
