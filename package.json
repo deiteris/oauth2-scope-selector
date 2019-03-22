@@ -47,7 +47,7 @@
   ],
   "dependencies": {
     "@advanced-rest-client/arc-icons": "^3.0.0-preview.1",
-    "@advanced-rest-client/paper-autocomplete": "^3.0.0-preview.1",
+    "@advanced-rest-client/paper-autocomplete": "^3.0.0-preview.2",
     "@polymer/iron-behaviors": "^3.0.0",
     "@polymer/iron-flex-layout": "^3.0.0",
     "@polymer/iron-validatable-behavior": "^3.0.0",
