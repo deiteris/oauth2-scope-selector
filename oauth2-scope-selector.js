@@ -11,19 +11,19 @@ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 License for the specific language governing permissions and limitations under
 the License.
 */
-import {PolymerElement} from '@polymer/polymer/polymer-element.js';
-import {IronValidatableBehavior} from '@polymer/iron-validatable-behavior/iron-validatable-behavior.js';
-import {IronControlState} from '@polymer/iron-behaviors/iron-control-state.js';
-import {html} from '@polymer/polymer/lib/utils/html-tag.js';
-import {mixinBehaviors} from '@polymer/polymer/lib/legacy/class.js';
-import '@polymer/polymer/lib/elements/dom-repeat.js';
-import '@polymer/polymer/lib/elements/dom-if.js';
-import '@polymer/iron-flex-layout/iron-flex-layout.js';
-import '@polymer/paper-input/paper-input.js';
-import '@polymer/paper-icon-button/paper-icon-button.js';
-import '@polymer/paper-toast/paper-toast.js';
-import '@advanced-rest-client/arc-icons/arc-icons.js';
-import '@advanced-rest-client/paper-autocomplete/paper-autocomplete.js';
+import {PolymerElement} from '../../@polymer/polymer/polymer-element.js';
+import {IronValidatableBehavior} from '../../@polymer/iron-validatable-behavior/iron-validatable-behavior.js';
+import {IronControlState} from '../../@polymer/iron-behaviors/iron-control-state.js';
+import {html} from '../../@polymer/polymer/lib/utils/html-tag.js';
+import {mixinBehaviors} from '../../@polymer/polymer/lib/legacy/class.js';
+import '../../@polymer/polymer/lib/elements/dom-repeat.js';
+import '../../@polymer/polymer/lib/elements/dom-if.js';
+import '../../@polymer/iron-flex-layout/iron-flex-layout.js';
+import '../../@polymer/paper-input/paper-input.js';
+import '../../@polymer/paper-icon-button/paper-icon-button.js';
+import '../../@polymer/paper-toast/paper-toast.js';
+import '../../@advanced-rest-client/arc-icons/arc-icons.js';
+import '../../@advanced-rest-client/paper-autocomplete/paper-autocomplete.js';
 /**
 A selector for OAuth 2.0 scope. Provides the UI to enter a scope for OAuth 2.0 settings.
 
