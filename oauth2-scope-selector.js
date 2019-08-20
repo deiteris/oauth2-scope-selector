@@ -11,19 +11,23 @@ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 License for the specific language governing permissions and limitations under
 the License.
 */
-import {PolymerElement} from '../../@polymer/polymer/polymer-element.js';
-import {IronValidatableBehavior} from '../../@polymer/iron-validatable-behavior/iron-validatable-behavior.js';
-import {IronControlState} from '../../@polymer/iron-behaviors/iron-control-state.js';
-import {html} from '../../@polymer/polymer/lib/utils/html-tag.js';
-import {mixinBehaviors} from '../../@polymer/polymer/lib/legacy/class.js';
-import '../../@polymer/polymer/lib/elements/dom-repeat.js';
-import '../../@polymer/polymer/lib/elements/dom-if.js';
-import '../../@polymer/iron-flex-layout/iron-flex-layout.js';
-import '../../@polymer/paper-input/paper-input.js';
-import '../../@polymer/paper-icon-button/paper-icon-button.js';
-import '../../@polymer/paper-toast/paper-toast.js';
-import '../../@advanced-rest-client/arc-icons/arc-icons.js';
-import '../../@advanced-rest-client/paper-autocomplete/paper-autocomplete.js';
+import {
+  html,
+  css,
+  LitElement
+} from 'lit-element';
+import {
+  ValidatableMixin
+} from '@anypoint-web-components/validatable-mixin/validatable-mixin.js';
+import {
+  ControlStateMixin
+} from '@anypoint-web-components/anypoint-control-mixins/anypoint-control-mixins.js';
+import '@anypoint-web-components/anypoint-input/anypoint-input.js';
+import '@anypoint-web-components/anypoint-button/anypoint-icon-button.js';
+import '@anypoint-web-components/anypoint-autocomplete/anypoint-autocomplete.js';
+import '@polymer/paper-toast/paper-toast.js';
+import '@advanced-rest-client/arc-icons/arc-icons.js';
+import '@polymer/iron-icon/iron-icon.js';
 /**
 A selector for OAuth 2.0 scope. Provides the UI to enter a scope for OAuth 2.0 settings.
 
@@ -35,7 +39,7 @@ A selector for OAuth 2.0 scope. Provides the UI to enter a scope for OAuth 2.0 s
 
 `allowed-scopes` attribute allows to provide a list of predefined scopes
 supported by the endpoint. When the list is set, autocomplete is enabled.
-Autocomplete is supported by `paper-autocomplete` element.
+Autocomplete is supported by `anypoint-autocomplete` element.
 
 Setting `prevent-custom-scopes` dissallows adding a scope that is not defined
 in the `allowed-scopes` array. This can only work with `allowed-scopes` set
@@ -95,175 +99,187 @@ console.log(values); // {"scope": []}
 </script>
 ```
 
-## Changes in version 2
-
-- `scopes` property is renamed to `value`
-- The element can now work with `iron-form` as a form element.
-
-### Styling
-`<oauth2-scope-selector>` provides the following custom properties and mixins for styling:
-
-Custom property | Description | Default
-----------------|-------------|----------
-`--oauth2-scope-selector` | Mixin applied to the element | `{}`
-`--oauth2-scope-selector-label` | Mixin applied to the label element (title of the control) | `{}`
-`--oauth2-scope-selector-list-item` | Mixin applied to each selected scope item. Consider setting `paper-item` styles for theming. | `{}`
-`--oauth2-scope-selector-item-description-color` | Color of the description of the scope when `allowedScopes` contains description. | `#737373`
-
-### Theming
-Use this mixins as a theming option across all ARC elements.
-
-Custom property | Description | Default
-----------------|-------------|----------
-`--icon-button` | Mixin applied to `paper-icon-buttons`. | `{}`
-`--icon-button-hover` | Mixin applied to `paper-icon-buttons` when hovered. | `{}`
-`--form-label` | Mixin applied to all labels that are form elements | `{}`
-`--api-form-action-icon-color` | Color of the add and remove scope buttons | `rgba(0, 0, 0, 0.74)`
-`--api-form-action-icon-hover-color` | Color of the add and remove scope buttons when hovered | `rgba(0, 0, 0, 0.84)`
-
 @customElement
-@polymer
 @demo demo/index.html
 @memberof UiElements
+@appliesMixin ValidatableMixin
+@appliesMixin ControlStateMixin
 */
-class OAuth2ScopeSelector extends mixinBehaviors([IronControlState, IronValidatableBehavior], PolymerElement) {
-  static get template() {
-    return html`
-    <style>
-     :host {
-      display: block;
-      outline: none;
-      @apply --oauth2-scope-selector;
-    }
+class OAuth2ScopeSelector extends ControlStateMixin(ValidatableMixin(LitElement)) {
+  static get styles() {
+    return css `
+    :host {
+     display: block;
+     outline: none;
+     box-sizing: border-box;
 
-    .form-label {
-      @apply --form-label;
-      @apply --oauth2-scope-selector-label;
-    }
+     font-size: var(--arc-font-body1-font-size);
+     font-weight: var(--arc-font-body1-font-weight);
+     line-height: var(--arc-font-body1-line-height);
+   }
 
-    .item {
-      width: calc(100% - 32px);
-      @apply --oauth2-scope-selector-list-item;
-    }
+   anypoint-autocomplete {
+     top: 52px;
+   }
 
-    paper-autocomplete {
-      top: 52px;
-    }
+   .input-container {
+     position: relative;
+   }
 
-    .input-container {
-      position: relative;
-    }
+   .add-button,
+   .delete-icon {
+     margin-left: 12px;
+   }
 
-    .add-button,
-    .delete-icon {
-      color: var(--api-form-action-icon-color, rgba(0, 0, 0, 0.74));
-      transition: color 0.25s linear;
-      margin-left: 8px;
-      @apply --icon-button;
-    }
+   .form-label {
+     margin: 12px 8px;
+   }
 
-    .add-button:hover,
-    .delete-icon:hover {
-      color: var(--api-form-action-icon-hover-color, rgba(0, 0, 0, 0.84));
-      @apply --icon-button-hover;
-    }
+   .scopes-list {
+    list-style: none;
+    margin: 12px 8px;
+    padding: 0;
+   }
 
-    .scope-item {
-      @apply --layout-horizontal;
-      @apply --layout-center;
-    }
+   .scope-item {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+   }
 
-    .scope-display {
-      overflow: hidden;
-      @apply --arc-font-body1;
-      font-size: 16px;
-    }
+   .scope-display {
+     overflow: hidden;
+     font-size: 16px;
+   }
 
-    .scope-item[two-line] {
-      margin-bottom: 12px;
-    }
+   .scope-item[two-line] {
+     margin-bottom: 12px;
+   }
 
-    .scope-item[two-line] .scope-display {
-      font-weight: 400;
-    }
+   .scope-item[two-line] .scope-display {
+     font-weight: 400;
+   }
 
-    .scope-item-label {
-      text-overflow: ellipsis;
-      overflow: hidden;
-      white-space: nowrap;
-    }
+   .scope-item-label {
+     text-overflow: ellipsis;
+     overflow: hidden;
+     white-space: nowrap;
+   }
 
-    .scope-display div[secondary] {
-      font-size: 14px;
-      font-weight: 400;
-      line-height: 20px;
-      color: var(--oauth2-scope-selector-item-description-color, #737373);
+   .scope-display div[secondary] {
+     font-size: 14px;
+     font-weight: 400;
+     line-height: 20px;
+     color: var(--oauth2-scope-selector-item-description-color, #737373);
+   }`;
+  }
+
+  _scopesListTemplate() {
+    const value = this.value;
+    if (!value || !value.length) {
+      return;
     }
-    </style>
+    const {
+      readOnly,
+      _allowedIsObject
+    } = this;
+    return value.map((item, index) => html`
+    <li class="scope-item" ?two-line="${_allowedIsObject}">
+      <div class="scope-display">
+        <div class="scope-item-label">${item}</div>
+        <div secondary="">${this._computeItemDescription(item, _allowedIsObject)}</div>
+      </div>
+      <anypoint-icon-button
+        class="delete-icon"
+        data-index="${index}"
+        data-action="remove-scope"
+        @click="${this._removeScope}"
+        ?disabled="${readOnly}"
+        aria-label="Press to remove this scope from the list"
+        title="Remove scope">
+        <iron-icon icon="arc:remove-circle-outline"></iron-icon>
+      </anypoint-icon-button>
+    </li>`);
+  }
+
+  render() {
+    const {
+      name,
+      invalid,
+      currentValue,
+      readOnly,
+      legacy,
+      outlined,
+      _autocompleteScopes,
+      _inputTarget,
+      _invalidMessage
+    } = this;
+    return html `
     <div class="container">
       <label class="form-label">Scopes</label>
+
       <div class="input-container">
-        <paper-input name="[[name]]" no-label-float="" invalid="[[invalid]]" label="Scope value"
-          class="scope-input" value="{{currentValue}}" on-keydown="_keyDown" autocomplete="off"
-          title="Enter authorization scopes for this API endpoint.">
-          <paper-icon-button class="add-button" data-action="add-scope"
-            slot="suffix" icon="arc:add-circle-outline"
-            on-click="_appendScope" title="Add scope"></paper-icon-button>
-        </paper-input>
-        <template is="dom-if" if="[[hasAutocomplete]]">
-          <paper-autocomplete target="[[inputTarget]]" source="[[_autocompleteScopes]]"
-            on-selected="_suggestionSelected" open-on-focus=""></paper-autocomplete>
-        </template>
+        <anypoint-input
+          name="${name}"
+          ?invalid="${invalid}"
+          class="scope-input"
+          .value="${currentValue}"
+          ?readOnly="${readOnly}"
+          ?outlined="${outlined}"
+          ?legacy="${legacy}"
+          title="Enter authorization scopes for this API endpoint"
+          .invalidMessage="${_invalidMessage}"
+          @value-changed="${this._currentValueHandler}"
+          @keydown="${this._keyDown}">
+          <label slot="label">Scope value</label>
+          <anypoint-icon-button
+            class="add-button"
+            data-action="add-scope"
+            slot="suffix"
+            @click="${this._appendScope}"
+            ?disabled="${readOnly}"
+            aria-label="Press to add current scope to the list"
+            title="Add scope">
+            <iron-icon icon="arc:add-circle-outline"></iron-icon>
+          </anypoint-icon-button>
+        </anypoint-input>
+
+        ${_autocompleteScopes && _autocompleteScopes.length ?
+          html`<anypoint-autocomplete
+          .target="${_inputTarget}"
+          .source="${_autocompleteScopes}"
+          @selected="${this._suggestionSelected}"
+        ></anypoint-autocomplete>` : ''}
       </div>
-      <section class="scopes-list" role="list">
-        <template is="dom-repeat" items="[[value]]">
-          <div class="scope-item" two-line\$="[[_allowedIsObject]]">
-            <div class="scope-display">
-              <div class="scope-item-label">[[item]]</div>
-              <div secondary="">[[_computeItemDescription(item, _allowedIsObject)]]</div>
-            </div>
-            <paper-icon-button class="delete-icon" data-action="remove-scope"
-              icon="arc:remove-circle-outline" on-click="_removeScope" title="Remove scope"></paper-icon-button>
-          </div>
-        </template>
-      </section>
+
+      <ul class="scopes-list">
+        ${this._scopesListTemplate()}
+      </ul>
     </div>
-    <paper-toast missing-scope="" text="Enter scope value to add a scope."></paper-toast>
-    <paper-toast dissalowed="" text="You can't enter this scope. Use one of the provided scopes."></paper-toast>
+    <paper-toast missing-scope text="Enter scope value to add a scope."></paper-toast>
+    <paper-toast dissalowed text="You can't enter this scope. Use one of the provided scopes."></paper-toast>
 `;
   }
 
-  static get is() {
-    return 'oauth2-scope-selector';
-  }
   static get properties() {
     return {
       /**
        * List of scopes entered by the user. It can be used it pre-select scopes
        * by providing an array with scope values.
        */
-      value: {
-        type: Array,
-        value: function() {
-          return [];
-        },
-        notify: true
-      },
+      value: { type: Array },
       /**
        * Form input name
        */
-      name: String,
+      name: { type: String },
       /**
        * Current value entered by the user. This is not a scope and it is not
        * yet in the scopes list. User has to accept the scope before it become
        * available in the scopes list.
        */
-      currentValue: String,
-      // Target for `paper-autocomplete`
-      inputTarget: {
-        type: HTMLElement,
-        readOnly: true
-      },
+      currentValue: { type: String },
+      // Target for `anypoint-autocomplete`
+      _inputTarget: { type: Object },
       /**
        * List of available scopes.
        * It can be either list of string or list of object. If this is the
@@ -280,69 +296,119 @@ class OAuth2ScopeSelector extends mixinBehaviors([IronControlState, IronValidata
        * When the description is provided it will be displayed below the name
        * of the scope.
        */
-      allowedScopes: Array,
+      allowedScopes: { type: Array },
       // If true then scopes that are in the `allowedScopes` list will be
       // allowed to be add.
-      preventCustomScopes: Boolean,
+      preventCustomScopes: { type: Boolean },
       // Computed value, true if the `allowedScopes` is a list of objects
-      _allowedIsObject: {
-        type: Boolean,
-        value: false,
-        computed: '_computeAllowedIsObject(allowedScopes)'
-      },
+      _allowedIsObject: { type: Boolean },
       /**
        * Set to true to auto-validate the input value when it changes.
        */
-      autoValidate: Boolean,
+      autoValidate: { type: Boolean },
       /**
        * List of scopes to be set as autocomplete source.
        */
-      _autocompleteScopes: {
-        type: Array,
-        computed: '_normalizeScopes(allowedScopes)'
-      },
-      /**
-       * True if the element has attached autocomplete element.
-       *
-       * @type {Object}
-       */
-      hasAutocomplete: {
-        type: Boolean,
-        computed: '_computeHasAutocomplete(_autocompleteScopes)'
-      },
+      _autocompleteScopes: { type: Array },
       /**
        * Returns true if the value is invalid.
        *
        * If `autoValidate` is true, the `invalid` attribute is managed automatically,
        * which can clobber attempts to manage it manually.
        */
-      invalid: {
-        type: Boolean,
-        value: false,
-        notify: true,
-        reflectToAttribute: true,
-        observer: '_invalidChanged'
-      },
+      invalid: { type: Boolean, reflect: true },
       /**
        * Set to true to mark the input as required.
        */
-      required: {
-        type: Boolean,
-        value: false
-      }
+      required: { type: Boolean },
+      /**
+       * When set the editor is in read only mode.
+       */
+      readOnly: { type: Boolean },
+      /**
+       * Enables Anypoint legacy styling
+       */
+      legacy: { type: Boolean },
+      /**
+       * Enables Material Design outlined style
+       */
+      outlined: { type: Boolean }
     };
   }
 
-  static get observers() {
-    return [
-      '_handleAutoValidate(autoValidate, value.*)'
-    ];
+  get _invalidMessage() {
+    let message;
+    if (this.allowedScopes) {
+      message = 'Entered value is not allowed';
+    } else if (this.required) {
+      message = 'Scope value is required';
+    }
+    return message;
   }
 
-  ready() {
-    super.ready();
-    this._ensureAttribute('tabindex', -1);
-    this._setInputTarget(this.shadowRoot.querySelector('.scope-input'));
+  get value() {
+    return this._value;
+  }
+
+  set value(value) {
+    const old = this._value;
+    /* istanbul ignore if */
+    if (old === value) {
+      return;
+    }
+    this._value = value;
+    this.requestUpdate('value', old);
+    this._handleAutoValidate(this.autoValidate, value);
+    this.dispatchEvent(new CustomEvent('value-changed', {
+      detail: {
+        value
+      }
+    }));
+  }
+
+  get allowedScopes() {
+    return this._allowedScopes;
+  }
+
+  set allowedScopes(value) {
+    const old = this._allowedScopes;
+    /* istanbul ignore if */
+    if (old === value) {
+      return;
+    }
+    this._allowedScopes = value;
+    this._allowedIsObject = this._computeAllowedIsObject(value);
+    this._autocompleteScopes = this._normalizeScopes(value);
+  }
+
+  get invalid() {
+    return this._invalid;
+  }
+
+  set invalid(value) {
+    const old = this._invalid;
+    /* istanbul ignore if */
+    if (old === value) {
+      return;
+    }
+    this._invalid = value;
+    this.requestUpdate('invalid', old);
+    this._invalidChanged(value);
+    this.dispatchEvent(new CustomEvent('invalid-changed', {
+      detail: {
+        value
+      }
+    }));
+  }
+
+  constructor() {
+    super();
+
+    this.value = [];
+  }
+
+  firstUpdated() {
+    this._inputTarget = this.shadowRoot.querySelector('.scope-input');
   }
 
   _invalidChanged(invalid) {
@@ -361,21 +427,15 @@ class OAuth2ScopeSelector extends mixinBehaviors([IronControlState, IronValidata
   }
   // Remove scope button click handler
   _removeScope(e) {
-    const repeater = this.shadowRoot
-    .querySelector('.scopes-list > dom-repeat, template[is="dom-repeat"]');
-    const item = repeater.itemForElement(e.target);
-    if (!item) {
+    const index = Number(e.currentTarget.dataset.index);
+    if (index !== index || !this.value) {
       return;
     }
-    const all = this.value;
-    const index = all.indexOf(item);
-    if (index === -1) {
-      return;
-    }
-    this.splice('value', index, 1);
+    this.value.splice(index, 1);
+    this.value = [...this.value];
   }
   /**
-   * Handler for the `paper-autocomplete` selected event.
+   * Handler for the `anypoint-autocomplete` selected event.
    *
    * @param {Event} e
    */
@@ -386,7 +446,7 @@ class OAuth2ScopeSelector extends mixinBehaviors([IronControlState, IronValidata
     this.append(scope);
     setTimeout(() => {
       this.currentValue = '';
-    }, 1);
+    });
   }
   /**
    * Adds a scope to the list. The same as pushing item to the `scopes`
@@ -396,20 +456,24 @@ class OAuth2ScopeSelector extends mixinBehaviors([IronControlState, IronValidata
    */
   append(scope) {
     const scopeValue = typeof scope === 'string' ? scope : scope.value;
-    const all = this.value;
+    if (!scopeValue) {
+      return;
+    }
+    const all = this.value || [];
     let index = all.indexOf(scopeValue);
     if (index !== -1) {
       return;
     }
-    if (this.preventCustomScopes && this.allowedScopes &&
-      this.allowedScopes.length) {
+    const as = this.allowedScopes;
+    if (as && as.length) {
       index = this._findAllowedScopeIndex(scopeValue);
-      if (index === -1) {
+      if (index === -1 && this.preventCustomScopes) {
         this.shadowRoot.querySelector('paper-toast[dissalowed]').opened = true;
         return;
       }
     }
-    this.push('value', scopeValue);
+    all.push(scopeValue);
+    this.value = [...all];
   }
   /**
    * Finds an index if the `scope` in the `allowedScopes` list.
@@ -432,10 +496,10 @@ class OAuth2ScopeSelector extends mixinBehaviors([IronControlState, IronValidata
   }
   // A handler for the input's key down event. Handles ENTER press.
   _keyDown(e) {
-    if (e.keyCode !== 13) {
+    if (e.key !== 'Enter') {
       return;
     }
-    const ac = this.shadowRoot.querySelector('paper-autocomplete');
+    const ac = this.shadowRoot.querySelector('anypoint-autocomplete');
     if (ac && ac.opened) {
       return;
     }
@@ -462,15 +526,6 @@ class OAuth2ScopeSelector extends mixinBehaviors([IronControlState, IronValidata
         'value': item.label,
       };
     });
-  }
-  /**
-   * Computes value for `hasAutocomplete`.
-   *
-   * @param {?Array} scopes List of scopes
-   * @return {Boolean} True if scopes are set
-   */
-  _computeHasAutocomplete(scopes) {
-    return !!(scopes && scopes.length);
   }
   /**
    * Compute function for the _allowedIsObject. Check first item of the
@@ -504,7 +559,6 @@ class OAuth2ScopeSelector extends mixinBehaviors([IronControlState, IronValidata
     }
     return this.allowedScopes[index].description;
   }
-
   /**
    * Returns false if the element is required and does not have a selection,
    * and true otherwise.
@@ -513,8 +567,25 @@ class OAuth2ScopeSelector extends mixinBehaviors([IronControlState, IronValidata
    * and the element has a valid selection.
    */
   _getValidity() {
-    return this.disabled || !this.required || (this.required &&
-      !!(this.value && this.value.length));
+    const {
+      value,
+      disabled,
+      required,
+      allowedScopes
+    } = this;
+    const hasValue = !!(value && value.length);
+    const valid = disabled || !required || (required && hasValue);
+    if (!valid || !hasValue || !allowedScopes) {
+      return valid;
+    }
+    for (let i = 0, len = value.length; i < len; i++) {
+      const scope = value[i];
+      const index = this._findAllowedScopeIndex(scope);
+      if (index === -1) {
+        return false;
+      }
+    }
+    return true;
   }
 
   _handleAutoValidate(autoValidate) {
@@ -522,5 +593,9 @@ class OAuth2ScopeSelector extends mixinBehaviors([IronControlState, IronValidata
       this.invalid = !this._getValidity();
     }
   }
+
+  _currentValueHandler(e) {
+    this.currentValue = e.detail.value;
+  }
 }
-window.customElements.define(OAuth2ScopeSelector.is, OAuth2ScopeSelector);
+window.customElements.define('oauth2-scope-selector', OAuth2ScopeSelector);

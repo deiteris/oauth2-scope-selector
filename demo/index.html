@@ -1,135 +1,58 @@
 <!doctype html>
-<html>
+<html lang="en-GB">
 <head>
+  <meta charset="utf-8">
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1, user-scalable=yes">
-  <title>OAuth2 scope selector demo</title>
-
-  <script src="../node_modules/@webcomponents/webcomponentsjs/webcomponents-loader.js"></script>
-
-  <script type="module">
-    import '@polymer/iron-demo-helpers/demo-pages-shared-styles.js';
-    import '@polymer/iron-demo-helpers/demo-snippet.js';
-    import '@polymer/polymer/lib/elements/dom-bind.js';
-    import '@polymer/iron-form/iron-form.js';
-    import '../oauth2-scope-selector.js';
-  </script>
-
-  <custom-style>
-    <style is="custom-style" include="demo-pages-shared-styles">
-    :root {
-      --accent-color: #FF5040;
-      --arc-font-body1: {
-        @apply --paper-font-body1;
-      };
-
-      --api-form-action-icon-color: #00A2DF;
-      --api-form-action-icon-hover-color: #48C1ED;
-    }
+  <title>oauth2-scope-selector</title>
+  <style>
     output {
       display: block;
-      margin-top: 20px;
-      padding: 0.73em 0.54em;
-      border: 1px grey solid;
+      white-space: pre-wrap;
     }
-    </style>
-  </custom-style>
+
+    [role="main"].centered {
+      max-width: 1440px;
+    }
+
+    body.styled {
+      --anypoiont-dropdown-shaddow: 0 4px 5px 0 rgba(0, 0, 0, 0.14), 0 1px 10px 0 rgba(0, 0, 0, 0.12), 0 2px 4px -1px rgba(0, 0, 0, 0.4);
+    }
+
+    body.styled.dark {
+      --secondary-text-color: #616161;
+      --primary-background-color: #424242;
+
+      --anypoint-input-legacy-label-color: #F5F5F5;
+      --arc-interactive-demo-options-color: #F5F5F5;
+      --anypoint-checkbox-label-color:  #F5F5F5;
+      --anypoint-input-background-color: #494949;
+      --anypoint-input-label-color: #fff;
+      --anypoint-input-input-color: #fff;
+      --anypoint-input-border-bottom-color: #fff;
+      --anypoint-input-focused-border-bottom-color: #fff;
+      --anypoint-input-label-background-color: rgb(66, 66, 66);
+      --anypoint-input-legacy-focus-background-color: #3a3b3c;
+      --anypoint-input-legacy-focus-border-color: #178bea;
+      --anypoint-input-info-message-color: #fff;
+
+      --anypoint-dropdown-menu-background-color: #494949;
+      --anypoint-dropdown-menu-label-background-color: var(--primary-background-color);
+      --anypoint-listbox-background-color: #494949;
+      --anypoint-dropdown-menu-focus-background-color: #9E9E9E;
+      --anypoint-dropdown-menu-label-color: #fff;
+      --anypoint-dropdown-menu-info-message-color: #fff;
+      --anypoint-item-hover-background-color: #9E9E9E;
+
+      --anypoint-icon-button-emphasis-low-color: #fff;
+
+      --anypoiont-autocomplete-background-color: #494949;
+    }
+  </style>
 </head>
-<body unresolved>
-  <div class="vertical-section-container centered">
-    <h3>Validation and value</h3>
-    <demo-snippet>
-      <dom-bind>
-        <template is="dom-bind">
-          <oauth2-scope-selector required="" auto-validate="" invalid="{{invalid}}" value="{{value}}"></oauth2-scope-selector>
-          <h4>Produced value (array)</h4>
-          <output>[[value]]</output>
-          <h4>Validation state</h4>
-          <output>Inavlid value is: [[invalid]]</output>
-        </template>
-      </dom-bind>
-    </demo-snippet>
-
-    <h3>Manual validation</h3>
-    <demo-snippet>
-      <template>
-        <iron-form id="form">
-          <form enctype="application/x-www-form-urlencoded" method="post">
-            <oauth2-scope-selector name="scope" required=""></oauth2-scope-selector>
-          </form>
-        </iron-form>
-        <button id="manualValidation">Validate</button>
-        <script>
-        const button = document.getElementById('manualValidation');
-        button.addEventListener('click', () => {
-          const form = document.getElementById('form');
-          form.validate();
-        });
-        </script>
-      </template>
-    </demo-snippet>
-
-    <h3>With predefined scopes</h3>
-    <demo-snippet>
-      <template>
-        <oauth2-scope-selector allowed-scopes="[&quot;user&quot;, &quot;user:email&quot;, &quot;user:follow&quot;, &quot;public_repo&quot;, &quot;repo&quot;, &quot;repo_deployment&quot;, &quot;repo:status&quot;, &quot;delete_repo&quot;, &quot;notifications&quot;, &quot;gist&quot;, &quot;read:repo_hook&quot;, &quot;write:repo_hook&quot;, &quot;admin:repo_hook&quot;, &quot;admin:org_hook&quot;, &quot;read:org&quot;, &quot;write:org&quot;, &quot;admin:org&quot;, &quot;read:public_key&quot;, &quot;write:public_key&quot;, &quot;admin:public_key&quot;, &quot;read:gpg_key&quot;, &quot;write:gpg_key&quot;, &quot;admin:gpg_key&quot;]"></oauth2-scope-selector>
-      </template>
-    </demo-snippet>
-
-    <h3>Allow only pre-defined scopes</h3>
-    <demo-snippet>
-      <template>
-        <h4>Select GitHub scope only</h4>
-        <oauth2-scope-selector prevent-custom-scopes="" allowed-scopes="[&quot;user&quot;, &quot;user:email&quot;, &quot;user:follow&quot;, &quot;public_repo&quot;, &quot;repo&quot;, &quot;repo_deployment&quot;, &quot;repo:status&quot;, &quot;delete_repo&quot;, &quot;notifications&quot;, &quot;gist&quot;, &quot;read:repo_hook&quot;, &quot;write:repo_hook&quot;, &quot;admin:repo_hook&quot;, &quot;admin:org_hook&quot;, &quot;read:org&quot;, &quot;write:org&quot;, &quot;admin:org&quot;, &quot;read:public_key&quot;, &quot;write:public_key&quot;, &quot;admin:public_key&quot;, &quot;read:gpg_key&quot;, &quot;write:gpg_key&quot;, &quot;admin:gpg_key&quot;]"></oauth2-scope-selector>
-      </template>
-    </demo-snippet>
-
-    <h3>Pre-selected scopes</h3>
-    <demo-snippet>
-      <template>
-        <h4>Select GitHub scope only</h4>
-        <oauth2-scope-selector prevent-custom-scopes="" value="[&quot;user:email&quot;, &quot;public_repo&quot;]" allowed-scopes="[&quot;user&quot;, &quot;user:email&quot;, &quot;user:follow&quot;, &quot;public_repo&quot;, &quot;repo&quot;, &quot;repo_deployment&quot;, &quot;repo:status&quot;, &quot;delete_repo&quot;, &quot;notifications&quot;, &quot;gist&quot;, &quot;read:repo_hook&quot;, &quot;write:repo_hook&quot;, &quot;admin:repo_hook&quot;, &quot;admin:org_hook&quot;, &quot;read:org&quot;, &quot;write:org&quot;, &quot;admin:org&quot;, &quot;read:public_key&quot;, &quot;write:public_key&quot;, &quot;admin:public_key&quot;, &quot;read:gpg_key&quot;, &quot;write:gpg_key&quot;, &quot;admin:gpg_key&quot;]"></oauth2-scope-selector>
-      </template>
-    </demo-snippet>
-
-    <h3>With description</h3>
-    <demo-snippet>
-      <template>
-        <oauth2-scope-selector id="withDescription" prevent-custom-scopes=""></oauth2-scope-selector>
-        <script>
-        // jscs:disable maximumLineLength
-        const scopes = [
-          {'label': 'user', 'description': 'Grants read/write access to profile info only. Note that this scope includes user:email and user:follow.'},
-          {'label': 'user:email', 'description': 'Grants read access to a user\'s email addresses.'},
-          {'label': 'user:follow', 'description': 'Grants access to follow or unfollow other users.'},
-          {'label': 'public_repo', 'description': 'Grants read/write access to code, commit statuses, collaborators, and deployment statuses for public repositories and organizations. Also required for starring public repositories.'},
-          {'label': 'repo', 'description': 'Grants read/write access to code, commit statuses, repository invitations, collaborators, and deployment statuses for public and private repositories and organizations.'},
-          {'label': 'repo_deployment', 'description': 'Grants access to deployment statuses for public and private repositories. This scope is only necessary to grant other users or services access to deployment statuses, without granting access to the code.'},
-          {'label': 'repo:status', 'description': 'Grants read/write access to public and private repository commit statuses. This scope is only necessary to grant other users or services access to private repository commit statuses without granting access to the code.'},
-          {'label': 'delete_repo', 'description': 'Grants access to delete adminable repositories.'},
-          {'label': 'notifications', 'description': 'Grants read access to a user\'s notifications. repo also provides this access.'},
-          {'label': 'gist', 'description': 'Grants write access to gists.'},
-          {'label': 'read:repo_hook', 'description': 'Grants read and ping access to hooks in public or private repositories.'},
-          {'label': 'write:repo_hook', 'description': 'Grants read, write, and ping access to hooks in public or private repositories.'},
-          {'label': 'admin:repo_hook', 'description': 'Grants read, write, ping, and delete access to hooks in public or private repositories.'},
-          {'label': 'admin:org_hook', 'description': 'Grants read, write, ping, and delete access to organization hooks. '},
-          {'label': 'read:org', 'description': 'Read-only access to organization, teams, and membership.'},
-          {'label': 'write:org', 'description': 'Publicize and unpublicize organization membership.'},
-          {'label': 'admin:org', 'description': 'Fully manage organization, teams, and memberships.'},
-          {'label': 'read:public_key', 'description': 'List and view details for public keys.'},
-          {'label': 'write:public_key', 'description': 'Create, list, and view details for public keys.'},
-          {'label': 'admin:public_key', 'description': 'Fully manage public keys.'},
-          {'label': 'read:gpg_key', 'description': 'List and view details for GPG keys.'},
-          {'label': 'write:gpg_key', 'description': 'Create, list, and view details for GPG keys.'},
-          {'label': 'admin:gpg_key', 'description': 'Fully manage GPG keys.'}
-        ];
-        const element = document.getElementById('withDescription');
-        element.allowedScopes = scopes;
-        element.value = ['user:email', 'public_repo'];
-        </script>
-      </template>
-    </demo-snippet>
-  </div>
+<body class="styled">
+  <div id="demo"></div>
+  <script type="module" src="./index.js"></script>
 </body>
 </html>

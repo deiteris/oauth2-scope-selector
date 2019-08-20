@@ -12,15 +12,11 @@
 // tslint:disable:variable-name Describing an API that's defined elsewhere.
 // tslint:disable:no-any describes the API as best we are able today
 
-import {PolymerElement} from '@polymer/polymer/polymer-element.js';
+import {html, css, LitElement} from 'lit-element';
 
-import {IronValidatableBehavior} from '@polymer/iron-validatable-behavior/iron-validatable-behavior.js';
+import {ValidatableMixin} from '@anypoint-web-components/validatable-mixin/validatable-mixin.js';
 
-import {IronControlState} from '@polymer/iron-behaviors/iron-control-state.js';
-
-import {html} from '@polymer/polymer/lib/utils/html-tag.js';
-
-import {mixinBehaviors} from '@polymer/polymer/lib/legacy/class.js';
+import {ControlStateMixin} from '@anypoint-web-components/anypoint-control-mixins/anypoint-control-mixins.js';
 
 declare namespace UiElements {
 
@@ -35,7 +31,7 @@ declare namespace UiElements {
    *
    * `allowed-scopes` attribute allows to provide a list of predefined scopes
    * supported by the endpoint. When the list is set, autocomplete is enabled.
-   * Autocomplete is supported by `paper-autocomplete` element.
+   * Autocomplete is supported by `anypoint-autocomplete` element.
    *
    * Setting `prevent-custom-scopes` dissallows adding a scope that is not defined
    * in the `allowed-scopes` array. This can only work with `allowed-scopes` set
@@ -94,57 +90,18 @@ declare namespace UiElements {
    * console.log(values); // {"scope": []}
    * </script>
    * ```
-   *
-   * ## Changes in version 2
-   *
-   * - `scopes` property is renamed to `value`
-   * - The element can now work with `iron-form` as a form element.
-   *
-   * ### Styling
-   * `<oauth2-scope-selector>` provides the following custom properties and mixins for styling:
-   *
-   * Custom property | Description | Default
-   * ----------------|-------------|----------
-   * `--oauth2-scope-selector` | Mixin applied to the element | `{}`
-   * `--oauth2-scope-selector-label` | Mixin applied to the label element (title of the control) | `{}`
-   * `--oauth2-scope-selector-list-item` | Mixin applied to each selected scope item. Consider setting `paper-item` styles for theming. | `{}`
-   * `--oauth2-scope-selector-item-description-color` | Color of the description of the scope when `allowedScopes` contains description. | `#737373`
-   *
-   * ### Theming
-   * Use this mixins as a theming option across all ARC elements.
-   *
-   * Custom property | Description | Default
-   * ----------------|-------------|----------
-   * `--icon-button` | Mixin applied to `paper-icon-buttons`. | `{}`
-   * `--icon-button-hover` | Mixin applied to `paper-icon-buttons` when hovered. | `{}`
-   * `--form-label` | Mixin applied to all labels that are form elements | `{}`
-   * `--api-form-action-icon-color` | Color of the add and remove scope buttons | `rgba(0, 0, 0, 0.74)`
-   * `--api-form-action-icon-hover-color` | Color of the add and remove scope buttons when hovered | `rgba(0, 0, 0, 0.84)`
    */
-  class OAuth2ScopeSelector {
+  class OAuth2ScopeSelector extends
+    ValidatableMixin(
+    ControlStateMixin(
+    Object)) {
+    readonly _invalidMessage: any;
 
     /**
      * List of scopes entered by the user. It can be used it pre-select scopes
      * by providing an array with scope values.
      */
     value: any[]|null|undefined;
-
-    /**
-     * Form input name
-     */
-    name: string|null|undefined;
-
-    /**
-     * Current value entered by the user. This is not a scope and it is not
-     * yet in the scopes list. User has to accept the scope before it become
-     * available in the scopes list.
-     */
-    currentValue: string|null|undefined;
-
-    /**
-     * Target for `paper-autocomplete`
-     */
-    readonly inputTarget: HTMLElement|null|undefined;
 
     /**
      * List of available scopes.
@@ -165,6 +122,31 @@ declare namespace UiElements {
     allowedScopes: any[]|null|undefined;
 
     /**
+     * Returns true if the value is invalid.
+     *
+     * If `autoValidate` is true, the `invalid` attribute is managed automatically,
+     * which can clobber attempts to manage it manually.
+     */
+    invalid: boolean|null|undefined;
+
+    /**
+     * Form input name
+     */
+    name: string|null|undefined;
+
+    /**
+     * Current value entered by the user. This is not a scope and it is not
+     * yet in the scopes list. User has to accept the scope before it become
+     * available in the scopes list.
+     */
+    currentValue: string|null|undefined;
+
+    /**
+     * Target for `anypoint-autocomplete`
+     */
+    _inputTarget: object|null|undefined;
+
+    /**
      * allowed to be add.
      */
     preventCustomScopes: boolean|null|undefined;
@@ -172,7 +154,7 @@ declare namespace UiElements {
     /**
      * Computed value, true if the `allowedScopes` is a list of objects
      */
-    readonly _allowedIsObject: boolean|null|undefined;
+    _allowedIsObject: boolean|null|undefined;
 
     /**
      * Set to true to auto-validate the input value when it changes.
@@ -182,26 +164,30 @@ declare namespace UiElements {
     /**
      * List of scopes to be set as autocomplete source.
      */
-    readonly _autocompleteScopes: any[]|null|undefined;
-
-    /**
-     * True if the element has attached autocomplete element.
-     */
-    readonly hasAutocomplete: object|null;
-
-    /**
-     * Returns true if the value is invalid.
-     *
-     * If `autoValidate` is true, the `invalid` attribute is managed automatically,
-     * which can clobber attempts to manage it manually.
-     */
-    invalid: boolean|null|undefined;
+    _autocompleteScopes: any[]|null|undefined;
 
     /**
      * Set to true to mark the input as required.
      */
     required: boolean|null|undefined;
-    ready(): void;
+
+    /**
+     * When set the editor is in read only mode.
+     */
+    readOnly: boolean|null|undefined;
+
+    /**
+     * Enables Anypoint legacy styling
+     */
+    legacy: boolean|null|undefined;
+
+    /**
+     * Enables Material Design outlined style
+     */
+    outlined: boolean|null|undefined;
+    _scopesListTemplate(): any;
+    render(): any;
+    firstUpdated(): void;
     _invalidChanged(invalid: any): void;
 
     /**
@@ -215,7 +201,7 @@ declare namespace UiElements {
     _removeScope(e: any): void;
 
     /**
-     * Handler for the `paper-autocomplete` selected event.
+     * Handler for the `anypoint-autocomplete` selected event.
      */
     _suggestionSelected(e: Event|null): void;
 
@@ -250,14 +236,6 @@ declare namespace UiElements {
     _normalizeScopes(scopes: any[]|null): any[]|null;
 
     /**
-     * Computes value for `hasAutocomplete`.
-     *
-     * @param scopes List of scopes
-     * @returns True if scopes are set
-     */
-    _computeHasAutocomplete(scopes: any[]|null): Boolean|null;
-
-    /**
      * Compute function for the _allowedIsObject. Check first item of the
      * `allowedScopes` array if it is an object (return `true`) or
      * string (return `false`);
@@ -283,6 +261,7 @@ declare namespace UiElements {
      */
     _getValidity(): boolean;
     _handleAutoValidate(autoValidate: any): void;
+    _currentValueHandler(e: any): void;
   }
 }
 
