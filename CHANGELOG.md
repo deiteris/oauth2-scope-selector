@@ -72,3 +72,7 @@
 
 * Bumped version to stable ([c9e556fa0b6a0a84b7a2d18228b0867174e05ee5](https://github.com/advanced-rest-client/oauth2-scope-selector/commit/c9e556fa0b6a0a84b7a2d18228b0867174e05ee5))
 
+# [3.0.0](https://github.com/advanced-rest-client/oauth2-scope-selector/compare/1.0.6...3.0.0) (2019-08-20)
+
+
+
