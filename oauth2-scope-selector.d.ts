@@ -177,6 +177,11 @@ declare namespace UiElements {
     readOnly: boolean|null|undefined;
 
     /**
+     * When set the editor is in disabled mode.
+     */
+    disabled: boolean|null|undefined;
+
+    /**
      * Enables Anypoint legacy styling
      */
     legacy: boolean|null|undefined;

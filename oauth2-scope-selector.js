@@ -185,6 +185,7 @@ class OAuth2ScopeSelector extends ControlStateMixin(ValidatableMixin(LitElement)
     }
     const {
       readOnly,
+      disabled,
       _allowedIsObject
     } = this;
     return value.map((item, index) => html`
@@ -198,7 +199,7 @@ class OAuth2ScopeSelector extends ControlStateMixin(ValidatableMixin(LitElement)
         data-index="${index}"
         data-action="remove-scope"
         @click="${this._removeScope}"
-        ?disabled="${readOnly}"
+        ?disabled="${readOnly || disabled}"
         aria-label="Press to remove this scope from the list"
         title="Remove scope">
         <iron-icon icon="arc:remove-circle-outline"></iron-icon>
@@ -214,6 +215,7 @@ class OAuth2ScopeSelector extends ControlStateMixin(ValidatableMixin(LitElement)
       readOnly,
       legacy,
       outlined,
+      disabled,
       _autocompleteScopes,
       _inputTarget,
       _invalidMessage
@@ -229,6 +231,7 @@ class OAuth2ScopeSelector extends ControlStateMixin(ValidatableMixin(LitElement)
           class="scope-input"
           .value="${currentValue}"
           ?readOnly="${readOnly}"
+          ?disabled="${disabled}"
           ?outlined="${outlined}"
           ?legacy="${legacy}"
           title="Enter authorization scopes for this API endpoint"
@@ -241,7 +244,7 @@ class OAuth2ScopeSelector extends ControlStateMixin(ValidatableMixin(LitElement)
             data-action="add-scope"
             slot="suffix"
             @click="${this._appendScope}"
-            ?disabled="${readOnly}"
+            ?disabled="${readOnly || disabled}"
             aria-label="Press to add current scope to the list"
             title="Add scope">
             <iron-icon icon="arc:add-circle-outline"></iron-icon>
@@ -329,6 +332,10 @@ class OAuth2ScopeSelector extends ControlStateMixin(ValidatableMixin(LitElement)
        * When set the editor is in read only mode.
        */
       readOnly: { type: Boolean },
+      /**
+       * When set the editor is in disabled mode.
+       */
+      disabled: { type: Boolean },
       /**
        * Enables Anypoint legacy styling
        */
