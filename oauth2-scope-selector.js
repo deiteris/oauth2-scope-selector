@@ -135,6 +135,10 @@ class OAuth2ScopeSelector extends ControlStateMixin(ValidatableMixin(LitElement)
      margin: 12px 8px;
    }
 
+   .scope-input {
+     width: auto;
+   }
+
    .scopes-list {
     list-style: none;
     margin: 12px 8px;
