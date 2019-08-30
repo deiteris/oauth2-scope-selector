@@ -14,12 +14,13 @@ class ComponentDemo extends ArcDemoPage {
     super();
     this.initObservableProperties([
       'demoOutlined',
-      'demoLegacy',
+      'democompatibility',
       'readOnly',
-      'mainValue'
+      'mainValue',
+      'demoCompatibility'
     ]);
     this._componentName = 'oauth2-scope-selector';
-    this.demoStates = ['Filled', 'Outlined', 'Legacy'];
+    this.demoStates = ['Filled', 'Outlined', 'Anypoint'];
     this._mainDemoStateHandler = this._mainDemoStateHandler.bind(this);
     this._toggleMainOption = this._toggleMainOption.bind(this);
     this._mainValueHandler = this._mainValueHandler.bind(this);
@@ -132,15 +133,15 @@ class ComponentDemo extends ArcDemoPage {
     switch (state) {
       case 0:
         this.demoOutlined = false;
-        this.demoLegacy = false;
+        this.demoCompatibility = false;
         break;
       case 1:
         this.demoOutlined = true;
-        this.demoLegacy = false;
+        this.demoCompatibility = false;
         break;
       case 2:
         this.demoOutlined = false;
-        this.demoLegacy = true;
+        this.demoCompatibility = true;
         break;
     }
   }
@@ -163,7 +164,7 @@ class ComponentDemo extends ArcDemoPage {
       demoStates,
       darkThemeActive,
       demoOutlined,
-      demoLegacy,
+      demoCompatibility,
       readOnly
     } = this;
     return html `<section class="documentation-section">
@@ -184,7 +185,7 @@ class ComponentDemo extends ArcDemoPage {
         autovalidate
         @value-changed="${this._mainValueHandler}"
         ?outlined="${demoOutlined}"
-        ?legacy="${demoLegacy}"
+        ?compatibility="${demoCompatibility}"
         ?readOnly="${readOnly}"></oauth2-scope-selector>
 
       <label slot="options" id="mainOptionsLabel">Options</label>
@@ -223,7 +224,7 @@ class ComponentDemo extends ArcDemoPage {
           <li><b>Filled</b> (default)</li>
           <li><b>Outlined</b></li>
           <li>
-            <b>Legacy</b> - To provide compatibility with legacy Anypoint design
+            <b>Compatibility</b> - To provide compatibility with Anypoint design
           </li>
         </ul>
 

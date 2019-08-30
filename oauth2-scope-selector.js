@@ -213,7 +213,7 @@ class OAuth2ScopeSelector extends ControlStateMixin(ValidatableMixin(LitElement)
       invalid,
       currentValue,
       readOnly,
-      legacy,
+      compatibility,
       outlined,
       disabled,
       _autocompleteScopes,
@@ -233,7 +233,7 @@ class OAuth2ScopeSelector extends ControlStateMixin(ValidatableMixin(LitElement)
           ?readOnly="${readOnly}"
           ?disabled="${disabled}"
           ?outlined="${outlined}"
-          ?legacy="${legacy}"
+          ?compatibility="${compatibility}"
           title="Enter authorization scopes for this API endpoint"
           .invalidMessage="${_invalidMessage}"
           @value-changed="${this._currentValueHandler}"
@@ -337,7 +337,11 @@ class OAuth2ScopeSelector extends ControlStateMixin(ValidatableMixin(LitElement)
        */
       disabled: { type: Boolean },
       /**
-       * Enables Anypoint legacy styling
+       * Enables compatibility with Anypoint components.
+       */
+      compatibility: { type: Boolean },
+      /**
+       * @deprecated Use `compatibility` instead
        */
       legacy: { type: Boolean },
       /**
@@ -345,6 +349,14 @@ class OAuth2ScopeSelector extends ControlStateMixin(ValidatableMixin(LitElement)
        */
       outlined: { type: Boolean }
     };
+  }
+
+  get legacy() {
+    return this.compatibility;
+  }
+
+  set legacy(value) {
+    this.compatibility = value;
   }
 
   get _invalidMessage() {
