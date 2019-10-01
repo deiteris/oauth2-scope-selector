@@ -94,3 +94,12 @@
 
 
 
+## [3.0.3](https://github.com/advanced-rest-client/oauth2-scope-selector/compare/1.0.6...3.0.3) (2019-10-01)
+
+
+### Features
+
+* adding disabled state ([4746237](https://github.com/advanced-rest-client/oauth2-scope-selector/commit/4746237))
+
+
+
