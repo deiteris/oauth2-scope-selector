@@ -105,7 +105,7 @@ console.log(values); // {"scope": []}
 @appliesMixin ControlStateMixin
 */
 class OAuth2ScopeSelector extends ControlStateMixin(ValidatableMixin(LitElement)) {
-  static get styles() {
+  get styles() {
     return css `
     :host {
      display: block;
@@ -227,7 +227,7 @@ class OAuth2ScopeSelector extends ControlStateMixin(ValidatableMixin(LitElement)
       _inputTarget,
       _invalidMessage
     } = this;
-    return html `
+    return html `<style>${this.styles}</style>
     <div class="container">
       <label class="form-label">Scopes</label>
 
