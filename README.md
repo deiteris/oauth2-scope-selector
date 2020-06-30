@@ -1,6 +1,6 @@
 [![Published on NPM](https://img.shields.io/npm/v/@advanced-rest-client/oauth2-scope-selector.svg)](https://www.npmjs.com/package/@advanced-rest-client/oauth2-scope-selector)
 
-[![Build Status](https://travis-ci.org/advanced-rest-client/oauth2-scope-selector.svg?branch=stage)](https://travis-ci.org/advanced-rest-client/oauth2-scope-selector)
+[![Build Status](https://travis-ci.com/advanced-rest-client/oauth2-scope-selector.svg)](https://travis-ci.com/advanced-rest-client/oauth2-scope-selector)
 
 ## &lt;oauth2-scope-selector&gt;
 

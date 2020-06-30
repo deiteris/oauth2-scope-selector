@@ -1,57 +1,78 @@
-import {
-  fixture,
-  assert,
-  nextFrame,
-  html
-} from '@open-wc/testing';
+import { fixture, assert, nextFrame, html } from '@open-wc/testing';
 import * as MockInteractions from '@polymer/iron-test-helpers/mock-interactions.js';
 import '../oauth2-scope-selector.js';
 
-describe('<oauth2-scope-selector>', function() {
+/** @typedef {import('../index').OAuth2ScopeSelector} OAuth2ScopeSelector */
+
+describe('<oauth2-scope-selector>', () => {
+  /**
+   * @return {Promise<OAuth2ScopeSelector>}
+   */
   async function basicFixture() {
-    return await fixture(html `
+    return fixture(html`
       <oauth2-scope-selector></oauth2-scope-selector>
     `);
   }
-
+  /**
+   * @return {Promise<OAuth2ScopeSelector>}
+   */
   async function allowedFixture() {
-    return await fixture(html `
-      <oauth2-scope-selector allowedscopes='["test"]' preventcustomscopes></oauth2-scope-selector>
+    const allowed = ['test'];
+    return fixture(html`
+      <oauth2-scope-selector .allowedScopes="${allowed}" preventcustomscopes></oauth2-scope-selector>
     `);
   }
-
+  /**
+   * @return {Promise<OAuth2ScopeSelector>}
+   */
   async function valuesFixture() {
-    return await fixture(html `
-      <oauth2-scope-selector value='["test","test-2"]'></oauth2-scope-selector>
+    const value = ['test', 'test-2'];
+    return fixture(html`
+      <oauth2-scope-selector .value="${value}"></oauth2-scope-selector>
     `);
   }
-
+  /**
+   * @return {Promise<OAuth2ScopeSelector>}
+   */
   async function requiredFixture() {
-    return await fixture(html `
+    return fixture(html `
       <oauth2-scope-selector required></oauth2-scope-selector>
     `);
   }
-
+  /**
+   * @return {Promise<OAuth2ScopeSelector>}
+   */
   async function autoValidateFixture() {
-    return await fixture(html `
+    return fixture(html `
       <oauth2-scope-selector required autovalidate></oauth2-scope-selector>
     `);
   }
-
+  /**
+   * @return {Promise<OAuth2ScopeSelector>}
+   */
   async function autoValidateValueFixture() {
-    return await fixture(html `
-      <oauth2-scope-selector required autovalidate value='["test"]'></oauth2-scope-selector>
+    const value = ['test'];
+    return fixture(html `
+      <oauth2-scope-selector required autovalidate .value="${value}"></oauth2-scope-selector>
     `);
   }
-
+  /**
+   * @return {Promise<OAuth2ScopeSelector>}
+   */
   async function multiFixture() {
-    return await fixture(html `
-      <oauth2-scope-selector allowedscopes='[{"label":"test-label","description":"test-description"}]' preventcustomscopes></oauth2-scope-selector>
+    const allowed = [
+      {
+        label: 'test-label',
+        description: 'test-description'
+      }
+    ];
+    return fixture(html `
+      <oauth2-scope-selector .allowedScopes="${allowed}" preventcustomscopes></oauth2-scope-selector>
     `);
   }
 
   describe('basic', () => {
-    let element;
+    let element = /** OAuth2ScopeSelector */ (null);
     beforeEach(async () => {
       element = await basicFixture();
     });
@@ -79,7 +100,7 @@ describe('<oauth2-scope-selector>', function() {
   });
 
   describe('allowed scopes', () => {
-    let element;
+    let element = /** OAuth2ScopeSelector */ (null);
     beforeEach(async () => {
       element = await allowedFixture();
     });
@@ -99,31 +120,32 @@ describe('<oauth2-scope-selector>', function() {
     });
   });
 
-  describe('append()', () => {
+  describe('add()', () => {
     const scope = 'test-scope';
-    it('Appends scope', async () => {
+    it('adds a scope', async () => {
       const element = await basicFixture();
-      element.append(scope);
+      element.add(scope);
       assert.deepEqual(element.value, [scope]);
     });
 
-    it('Appends scope only once', async () => {
+    it('adds a scope only once', async () => {
       const element = await basicFixture();
-      element.append(scope);
-      element.append(scope);
+      element.add(scope);
+      element.add(scope);
       assert.deepEqual(element.value, [scope]);
     });
 
-    it('Does not append scope when prevented', async () => {
+    it('soes not add scope when prevented', async () => {
       const element = await allowedFixture();
-      element.append(scope);
+      element.add(scope);
       assert.deepEqual(element.value, []);
     });
 
     it('Informs the user about error', async () => {
       const element = await allowedFixture();
-      element.append(scope);
+      element.add(scope);
       const toast = element.shadowRoot.querySelector('paper-toast[dissalowed]');
+      // @ts-ignore
       assert.isTrue(toast.opened);
     });
   });
@@ -138,6 +160,7 @@ describe('<oauth2-scope-selector>', function() {
       const element = await basicFixture();
       element._appendScope();
       const toast = element.shadowRoot.querySelector('paper-toast[missing-scope]');
+      // @ts-ignore
       assert.isTrue(toast.opened);
     });
 
@@ -166,7 +189,7 @@ describe('<oauth2-scope-selector>', function() {
   });
 
   describe('allowed scopes as object', () => {
-    let element;
+    let element = /** OAuth2ScopeSelector */ (null);
     beforeEach(async () => {
       element = await multiFixture();
     });
@@ -187,7 +210,7 @@ describe('<oauth2-scope-selector>', function() {
   });
 
   describe('Without validation enabled', () => {
-    let element;
+    let element = /** OAuth2ScopeSelector */ (null);
     beforeEach(async () => {
       element = await basicFixture();
     });
@@ -202,7 +225,7 @@ describe('<oauth2-scope-selector>', function() {
   });
 
   describe('Required', () => {
-    let element;
+    let element = /** OAuth2ScopeSelector */ (null);
     beforeEach(async () => {
       element = await requiredFixture();
     });

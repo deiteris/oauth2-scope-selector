@@ -1,15 +1,11 @@
-import {
-  html
-} from 'lit-html';
-import {
-  ArcDemoPage
-} from '@advanced-rest-client/arc-demo-helper/ArcDemoPage.js';
+import { html } from 'lit-html';
+import { DemoPage } from '@advanced-rest-client/arc-demo-helper';
 import '@advanced-rest-client/arc-demo-helper/arc-demo-helper.js';
 import '@advanced-rest-client/arc-demo-helper/arc-interactive-demo.js';
 import '@anypoint-web-components/anypoint-checkbox/anypoint-checkbox.js';
 import '../oauth2-scope-selector.js';
 
-class ComponentDemo extends ArcDemoPage {
+class ComponentDemo extends DemoPage {
   constructor() {
     super();
     this.initObservableProperties([
@@ -21,6 +17,7 @@ class ComponentDemo extends ArcDemoPage {
     ]);
     this._componentName = 'oauth2-scope-selector';
     this.demoStates = ['Filled', 'Outlined', 'Anypoint'];
+    this.readOnly = false;
     this._mainDemoStateHandler = this._mainDemoStateHandler.bind(this);
     this._toggleMainOption = this._toggleMainOption.bind(this);
     this._mainValueHandler = this._mainValueHandler.bind(this);
@@ -130,28 +127,9 @@ class ComponentDemo extends ArcDemoPage {
 
   _mainDemoStateHandler(e) {
     const state = e.detail.value;
-    switch (state) {
-      case 0:
-        this.demoOutlined = false;
-        this.demoCompatibility = false;
-        break;
-      case 1:
-        this.demoOutlined = true;
-        this.demoCompatibility = false;
-        break;
-      case 2:
-        this.demoOutlined = false;
-        this.demoCompatibility = true;
-        break;
-    }
-  }
-
-  _toggleMainOption(e) {
-    const {
-      name,
-      checked
-    } = e.target;
-    this[name] = checked;
+    this.demoOutlined = state === 1;
+    this.demoCompatibility = state === 2;
+    this._updateCompatibility();
   }
 
   _mainValueHandler(e) {
@@ -165,7 +143,7 @@ class ComponentDemo extends ArcDemoPage {
       darkThemeActive,
       demoOutlined,
       demoCompatibility,
-      readOnly
+      readOnly,
     } = this;
     return html `<section class="documentation-section">
     <h3>Interactive demo</h3>
@@ -294,4 +272,3 @@ ${`<oauth2-scope-selector preventcustomscopes allowedscopes='[{"label":"user:ema
 }
 const instance = new ComponentDemo();
 instance.render();
-window.demo = instance;

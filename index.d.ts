@@ -11,6 +11,4 @@ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 License for the specific language governing permissions and limitations under
 the License.
 */
-import { OAuth2ScopeSelector } from './src/OAuth2ScopeSelector.js';
-
-window.customElements.define('oauth2-scope-selector', OAuth2ScopeSelector);
+export { OAuth2ScopeSelector } from './src/OAuth2ScopeSelector';
