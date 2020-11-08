@@ -4,6 +4,30 @@ import {TemplateResult, CSSResult, LitElement} from 'lit-element';
 import {AnypointInput} from '@anypoint-web-components/anypoint-input';
 import {Suggestion} from '@anypoint-web-components/anypoint-autocomplete/src/AnypointAutocomplete';
 
+export declare const scopesListTemplate: unique symbol;
+export declare const scopeTemplate: unique symbol;
+export declare const inputTemplate: unique symbol;
+export declare const invalidMessage: unique symbol;
+export declare const inputTarget: unique symbol;
+export declare const autocompleteScopes: unique symbol;
+export declare const autocompleteTemplate: unique symbol;
+export declare const notifyChanged: unique symbol;
+export declare const valueHandler: unique symbol;
+export declare const autoValidateHandler: unique symbol;
+export declare const findAllowedScopeIndex: unique symbol;
+export declare const computeAllowedIsObject: unique symbol;
+export declare const computeItemDescription: unique symbol;
+export declare const suggestionSelected: unique symbol;
+export declare const keyDownHandler: unique symbol;
+export declare const appendScopeHandler: unique symbol;
+export declare const invalidChangeHandler: unique symbol;
+export declare const invalidValue: unique symbol;
+export declare const allowedScopesValue: unique symbol;
+export declare const allowedIsObject: unique symbol;
+export declare const normalizeScopes: unique symbol;
+export declare const removeScopeHandler: unique symbol;
+export declare const valueValue: unique symbol;
+
 export declare interface AllowedScope {
   label: string;
   description?: string;
@@ -22,13 +46,13 @@ export declare interface AllowedScope {
  * supported by the endpoint. When the list is set, autocomplete is enabled.
  * Autocomplete is supported by `anypoint-autocomplete` element.
  *
- * Setting `preventcustomscopes` dissallows adding a scope that is not defined
+ * Setting `preventCustomScopes` disallows adding a scope that is not defined
  * in the `allowed-scopes` array. This can only work with `allowed-scopes` set
  *
  * #### Example
  *
  * ```html
- * <oauth2-scope-selector preventcustomscopes allowedscopes='["email", "profile"]'></oauth2-scope-selector>
+ * <oauth2-scope-selector preventCustomScopes allowedScopes='["email", "profile"]'></oauth2-scope-selector>
  * ```
  *
  * And in JavaScript
@@ -79,17 +103,30 @@ export declare interface AllowedScope {
  * console.log(values); // {"scope": []}
  * </script>
  * ```
+ * 
+ * @fires change When the scopes list changed. Non bubbling.
+ * @fires invalidchange When the invalid value change. Non bubbling.
  */
-export declare class OAuth2ScopeSelector {
-  readonly _invalidMessage: any;
-  readonly styles: CSSResult;
+export declare class OAuth2ScopeSelector extends ControlStateMixin(ValidatableMixin(LitElement)) {
+  get styles(): CSSResult;
 
   /**
    * List of scopes entered by the user. It can be used it pre-select scopes
    * by providing an array with scope values.
    */
   value: string[];
-
+  /**
+   * Form input name
+   * @attribute
+   */
+  name: string;
+  /**
+   * Current value entered by the user. This is not a scope and it is not
+   * yet in the scopes list. User has to accept the scope before it become
+   * available in the scopes list.
+   * @attribute
+   */
+  currentValue: string;
   /**
    * List of available scopes.
    * It can be either list of string or list of object. If this is the
@@ -107,120 +144,96 @@ export declare class OAuth2ScopeSelector {
    * of the scope.
    */
   allowedScopes?: string[]|AllowedScope[];
-
+  /**
+   * allowed to be add.
+   * @attribute
+   */
+  preventCustomScopes: boolean;
+  /**
+   * Set to true to auto-validate the input value when it changes.
+   * @attribute
+   */
+  autoValidate: boolean;
   /**
    * Returns true if the value is invalid.
    *
    * If `autoValidate` is true, the `invalid` attribute is managed automatically,
    * which can clobber attempts to manage it manually.
+   * @attribute
    */
   invalid: boolean;
-
-  /**
-   * Form input name
-   */
-  name: string;
-
-  /**
-   * Current value entered by the user. This is not a scope and it is not
-   * yet in the scopes list. User has to accept the scope before it become
-   * available in the scopes list.
-   */
-  currentValue: string;
-
-  /**
-   * Target for `anypoint-autocomplete`
-   */
-  _inputTarget: AnypointInput;
-
-  /**
-   * allowed to be add.
-   */
-  preventCustomScopes: boolean;
-
-  /**
-   * Computed value, true if the `allowedScopes` is a list of objects
-   */
-  _allowedIsObject: boolean;
-
-  /**
-   * Set to true to auto-validate the input value when it changes.
-   */
-  autoValidate: boolean;
-
-  /**
-   * List of scopes to be set as autocomplete source.
-   */
-  _autocompleteScopes?: Suggestion[];
-
   /**
    * Set to true to mark the input as required.
+   * @attribute
    */
   required: boolean;
-
   /**
    * When set the editor is in read only mode.
+   * @attribute
    */
   readOnly: boolean;
-
   /**
    * When set the editor is in disabled mode.
+   * @attribute
    */
   disabled: boolean;
-
   /**
-   * Enables Anypoint legacy styling
+   * Enables compatibility with Anypoint components.
+   * @attribute
    */
-  legacy: boolean;
-
+  compatibility: boolean;
   /**
    * Enables Material Design outlined style
+   * @attribute
    */
   outlined: boolean;
-
-  constructor();
-  firstUpdated(): void;
-
-  _scopesListTemplate(): TemplateResult;
-  render(): TemplateResult;
-
-  _invalidChanged(invalid: boolean): void;
+  get [invalidMessage](): string|undefined;
+  [valueValue]: string[];
+  [allowedScopesValue]?: string[]|AllowedScope[];
+  [allowedIsObject]: boolean;
+  [autocompleteScopes]: boolean;
+  [invalidValue]: boolean;
+  [inputTarget]: AnypointInput;
 
   /**
-   * Add currently entered scope value to the scopes list.
+   * Called by the `invalid` property setter when the change.
    */
-  _appendScope(): void;
+  [invalidChangeHandler](invalid: boolean): void;
+  /**
+   * Adds the currently entered scope value to the scopes list.
+   */
+  [appendScopeHandler](): void;
 
   /**
    * Remove scope button click handler
    */
-  _removeScope(e: PointerEvent): void;
+  [removeScopeHandler](e: PointerEvent): void;
 
   /**
    * Handler for the `anypoint-autocomplete` selected event.
    */
-  _suggestionSelected(e: CustomEvent): void;
+  [suggestionSelected](e: CustomEvent): void;
 
   /**
    * Adds a scope to the list. The same as pushing item to the `scopes`
    * array but it will check for duplicates first.
    *
-   * @param scope Scope value to append
+   * @param scope Scope value to add
    */
-  add(scope: string): void;
+  add(scope: string|Suggestion): void;
 
   /**
    * Finds an index if the `scope` in the `allowedScopes` list.
    *
-   * @param scope A scope value (label) to find.
-   * @returns An index of scope or `-1` if not found.
+   * @param {string} scope A scope value (label) to find.
+   * @return {number} An index of scope or `-1` if not found.
    */
-  _findAllowedScopeIndex(scope: string): number;
+  [findAllowedScopeIndex](scope: string): number;
 
   /**
    * A handler for the input's key down event. Handles ENTER press.
    */
-  _keyDown(e: KeyboardEvent): void;
+  [keyDownHandler](e: KeyboardEvent): void;
 
   /**
    * Normalizes scopes to use it with autocomplete element.
@@ -229,35 +242,69 @@ export declare class OAuth2ScopeSelector {
    * strings or objects
    * @returns Normalized scopes list for autocomplete.
    */
-  _normalizeScopes(scopes: AllowedScope[]): Suggestion[]|undefined;
+  [normalizeScopes](scopes: AllowedScope[]): Suggestion[]|undefined;
 
   /**
-   * Compute function for the _allowedIsObject. Check first item of the
+   * Compute function for the [allowedIsObject]. Check first item of the
    * `allowedScopes` array if it is an object (return `true`) or
    * string (return `false`);
    */
-  _computeAllowedIsObject(allowedScopes: string|AllowedScope[]): boolean;
+  [computeAllowedIsObject](allowedScopes: string|AllowedScope[]): boolean;
 
   /**
    * Returns a description for the selected scope.
    *
    * @param scope Scope name
-   * @param allowedIsObject True if allowed scopes is an object.
-   * @returns Description of the scope or `` (empty string) if the
-   * item do not exists.
+   * @param isObject True if allowed scopes is an object.
+   * @returns Description of the scope or `` (empty string) if the item do not exists.
    */
-  _computeItemDescription(scope: string, allowedIsObject: boolean): string;
+  [computeItemDescription](scope: string, isObject: boolean): string;
 
   /**
    * Returns false if the element is required and does not have a selection,
    * and true otherwise.
    *
-   * @returns true if `required` is false, or if `required` is true
+   * @return true if `required` is false, or if `required` is true
    * and the element has a valid selection.
    */
   _getValidity(): boolean;
-  _handleAutoValidate(autoValidate: boolean): void;
-  _currentValueHandler(e: CustomEvent): void;
+
+  /**
+   * 
+   * @param auto The current state of the autoValidate property
+   */
+  [autoValidateHandler](auto: boolean): void;
+
+  /**
+   * Handler for the input event from the text field.
+   */
+  [valueHandler](e: Event): void;
+
+  [notifyChanged](): void;
+
+  render(): TemplateResult;
+
+  /**
+   * @returns The template for the scopes list
+   */
+  [scopesListTemplate](): TemplateResult|string;
+
+  /**
+   * @param scope The scope name to render.
+   * @param index THe scope's index on the value array
+   * @returns The template for the scope list item.
+   */
+  [scopeTemplate](scope: string, index: number): TemplateResult;
+
+  /**
+   * @returns The template for the main input
+   */
+  [inputTemplate](): TemplateResult;
+
+  /**
+   * @returns THe template for the autocomplete element, if needed.
+   */
+  [autocompleteTemplate](): TemplateResult|string;
 }
 
 export declare interface OAuth2ScopeSelector extends ValidatableMixin, ControlStateMixin, LitElement {

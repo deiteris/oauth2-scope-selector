@@ -11,21 +11,47 @@ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
 License for the specific language governing permissions and limitations under
 the License.
 */
-import { html, css, LitElement } from 'lit-element';
+import { html, LitElement } from 'lit-element';
 import { ValidatableMixin } from '@anypoint-web-components/validatable-mixin';
 import { ControlStateMixin } from '@anypoint-web-components/anypoint-control-mixins';
 import '@anypoint-web-components/anypoint-input/anypoint-input.js';
 import '@anypoint-web-components/anypoint-button/anypoint-icon-button.js';
 import '@anypoint-web-components/anypoint-autocomplete/anypoint-autocomplete.js';
 import '@polymer/paper-toast/paper-toast.js';
-import { addCircleOutline, removeCircleOutline } from '@advanced-rest-client/arc-icons/ArcIcons.js';
+import '@advanced-rest-client/arc-icons/arc-icon.js';
+import elementStyles from './styles.js';
 
+/** @typedef {import('lit-element').TemplateResult} TemplateResult */
 /** @typedef {import('@polymer/paper-toast').PaperToastElement} PaperToastElement */
 /** @typedef {import('@anypoint-web-components/anypoint-autocomplete/src/AnypointAutocomplete').Suggestion} Suggestion */
 /** @typedef {import('./OAuth2ScopeSelector').AllowedScope} AllowedScope */
 
 /* eslint-disable class-methods-use-this */
 /* eslint-disable no-plusplus */
+
+export const scopesListTemplate = Symbol('scopesListTemplate');
+export const scopeTemplate = Symbol('scopeTemplate');
+export const inputTemplate = Symbol('inputTemplate');
+export const invalidMessage = Symbol('invalidMessage');
+export const inputTarget = Symbol('inputTarget');
+export const autocompleteScopes = Symbol('autocompleteScopes');
+export const autocompleteTemplate = Symbol('autocompleteTemplate');
+export const notifyChanged = Symbol('notifyChanged');
+export const valueHandler = Symbol('valueHandler');
+export const autoValidateHandler = Symbol('autoValidateHandler');
+export const findAllowedScopeIndex = Symbol('findAllowedScopeIndex');
+export const computeAllowedIsObject = Symbol('computeAllowedIsObject');
+export const computeItemDescription = Symbol('computeItemDescription');
+export const suggestionSelected = Symbol('suggestionSelected');
+export const keyDownHandler = Symbol('keyDownHandler');
+export const appendScopeHandler = Symbol('appendScopeHandler');
+export const invalidChangeHandler = Symbol('invalidChangeHandler');
+export const invalidValue = Symbol('invalidValue');
+export const allowedScopesValue = Symbol('allowedScopesValue');
+export const allowedIsObject = Symbol('allowedIsObject');
+export const normalizeScopes = Symbol('normalizeScopes');
+export const removeScopeHandler = Symbol('removeScopeHandler');
+export const valueValue = Symbol('valueValue');
 
 /**
 A selector for OAuth 2.0 scope. Provides the UI to enter a scope for OAuth 2.0 settings.
@@ -40,13 +66,13 @@ A selector for OAuth 2.0 scope. Provides the UI to enter a scope for OAuth 2.0 s
 supported by the endpoint. When the list is set, autocomplete is enabled.
 Autocomplete is supported by `anypoint-autocomplete` element.
 
-Setting `prevent-custom-scopes` dissallows adding a scope that is not defined
+Setting `preventCustomScopes` disallows adding a scope that is not defined
 in the `allowed-scopes` array. This can only work with `allowed-scopes` set
 
 #### Example
 
 ```html
-<oauth2-scope-selector prevent-custom-scopes allowed-scopes='["email", "profile"]'></oauth2-scope-selector>
+<oauth2-scope-selector preventCustomScopes allowedScopes='["email", "profile"]'></oauth2-scope-selector>
 ```
 
 And in JavaScript
@@ -97,177 +123,12 @@ const values = form.serializeForm();
 console.log(values); // {"scope": []}
 </script>
 ```
+@fires change When the scopes list changed.
+@fires invalidchange
 */
 export class OAuth2ScopeSelector extends ControlStateMixin(ValidatableMixin(LitElement)) {
   get styles() {
-    return css `
-    :host {
-     display: block;
-     outline: none;
-     box-sizing: border-box;
-
-     font-size: var(--arc-font-body1-font-size);
-     font-weight: var(--arc-font-body1-font-weight);
-     line-height: var(--arc-font-body1-line-height);
-   }
-
-   anypoint-autocomplete {
-     top: 52px;
-   }
-
-   .input-container {
-     position: relative;
-   }
-
-   .add-button,
-   .delete-icon {
-     margin-left: 12px;
-   }
-
-   .form-label {
-     margin: 12px 8px;
-   }
-
-   .scope-input {
-     width: auto;
-   }
-
-   .scopes-list {
-    list-style: none;
-    margin: 12px 8px;
-    padding: 0;
-   }
-
-   .scope-item {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-   }
-
-   .scope-display {
-     overflow: hidden;
-     font-size: 16px;
-   }
-
-   .scope-item[two-line] {
-     margin-bottom: 12px;
-   }
-
-   .scope-item[two-line] .scope-display {
-     font-weight: 400;
-   }
-
-   .scope-item-label {
-     text-overflow: ellipsis;
-     overflow: hidden;
-     white-space: nowrap;
-   }
-
-   .scope-display div[secondary] {
-     font-size: 14px;
-     font-weight: 400;
-     line-height: 20px;
-     color: var(--oauth2-scope-selector-item-description-color, #737373);
-   }
-
-   .icon {
-      display: inline-block;
-      width: 24px;
-      height: 24px;
-      fill: currentColor;
-    }`;
-  }
-
-  _scopesListTemplate() {
-    const { value } = this;
-    if (!value || !value.length) {
-      return '';
-    }
-    const {
-      readOnly,
-      disabled,
-      _allowedIsObject
-    } = this;
-    return value.map((item, index) => html`
-    <li class="scope-item" ?two-line="${_allowedIsObject}">
-      <div class="scope-display">
-        <div class="scope-item-label">${item}</div>
-        <div secondary="">${this._computeItemDescription(item, _allowedIsObject)}</div>
-      </div>
-      <anypoint-icon-button
-        class="delete-icon"
-        data-index="${index}"
-        data-action="remove-scope"
-        @click="${this._removeScope}"
-        ?disabled="${readOnly || disabled}"
-        aria-label="Press to remove this scope from the list"
-        title="Remove scope"
-      >
-        <span class="icon">${removeCircleOutline}</span>
-      </anypoint-icon-button>
-    </li>`);
-  }
-
-  render() {
-    const {
-      name,
-      invalid,
-      currentValue,
-      readOnly,
-      compatibility,
-      outlined,
-      disabled,
-      _autocompleteScopes,
-      _inputTarget,
-      _invalidMessage
-    } = this;
-    return html `<style>${this.styles}</style>
-    <div class="container">
-      <label class="form-label">Scopes</label>
-
-      <div class="input-container">
-        <anypoint-input
-          name="${name}"
-          ?invalid="${invalid}"
-          class="scope-input"
-          .value="${currentValue}"
-          ?readOnly="${readOnly}"
-          ?disabled="${disabled}"
-          ?outlined="${outlined}"
-          ?compatibility="${compatibility}"
-          title="Enter authorization scopes for this API endpoint"
-          .invalidMessage="${_invalidMessage}"
-          @value-changed="${this._currentValueHandler}"
-          @keydown="${this._keyDown}">
-          <label slot="label">Scope value</label>
-          <anypoint-icon-button
-            class="add-button"
-            data-action="add-scope"
-            slot="suffix"
-            @click="${this._appendScope}"
-            ?disabled="${readOnly || disabled}"
-            aria-label="Press to add current scope to the list"
-            title="Add scope"
-          >
-            <span class="icon">${addCircleOutline}</span>
-          </anypoint-icon-button>
-        </anypoint-input>
-
-        ${_autocompleteScopes && _autocompleteScopes.length ?
-          html`<anypoint-autocomplete
-          .target="${_inputTarget}"
-          .source="${_autocompleteScopes}"
-          @selected="${this._suggestionSelected}"
-        ></anypoint-autocomplete>` : ''}
-      </div>
-
-      <ul class="scopes-list">
-        ${this._scopesListTemplate()}
-      </ul>
-    </div>
-    <paper-toast missing-scope text="Enter scope value to add a scope."></paper-toast>
-    <paper-toast dissalowed text="You can't enter this scope. Use one of the provided scopes."></paper-toast>
-`;
+    return elementStyles;
   }
 
   static get properties() {
@@ -287,8 +148,6 @@ export class OAuth2ScopeSelector extends ControlStateMixin(ValidatableMixin(LitE
        * available in the scopes list.
        */
       currentValue: { type: String },
-      // Target for `anypoint-autocomplete`
-      _inputTarget: { type: Object },
       /**
        * List of available scopes.
        * It can be either list of string or list of object. If this is the
@@ -309,16 +168,10 @@ export class OAuth2ScopeSelector extends ControlStateMixin(ValidatableMixin(LitE
       // If true then scopes that are in the `allowedScopes` list will be
       // allowed to be add.
       preventCustomScopes: { type: Boolean },
-      // Computed value, true if the `allowedScopes` is a list of objects
-      _allowedIsObject: { type: Boolean },
       /**
        * Set to true to auto-validate the input value when it changes.
        */
       autoValidate: { type: Boolean },
-      /**
-       * List of scopes to be set as autocomplete source.
-       */
-      _autocompleteScopes: { type: Array },
       /**
        * Returns true if the value is invalid.
        *
@@ -343,25 +196,13 @@ export class OAuth2ScopeSelector extends ControlStateMixin(ValidatableMixin(LitE
        */
       compatibility: { type: Boolean },
       /**
-       * @deprecated Use `compatibility` instead
-       */
-      legacy: { type: Boolean },
-      /**
        * Enables Material Design outlined style
        */
       outlined: { type: Boolean }
     };
   }
 
-  get legacy() {
-    return this.compatibility;
-  }
-
-  set legacy(value) {
-    this.compatibility = value;
-  }
-
-  get _invalidMessage() {
+  get [invalidMessage]() {
     let message;
     if (this.allowedScopes) {
       message = 'Entered value is not allowed';
@@ -372,54 +213,50 @@ export class OAuth2ScopeSelector extends ControlStateMixin(ValidatableMixin(LitE
   }
 
   get value() {
-    return this._value;
+    return this[valueValue];
   }
 
   set value(value) {
-    const old = this._value;
+    const old = this[valueValue];
     /* istanbul ignore if */
     if (old === value) {
       return;
     }
-    this._value = value;
+    this[valueValue] = value;
     this.requestUpdate('value', old);
-    this._handleAutoValidate(this.autoValidate);
-    this.dispatchEvent(new CustomEvent('value-changed', {
-      detail: {
-        value
-      }
-    }));
+    this[autoValidateHandler](this.autoValidate);
   }
 
   get allowedScopes() {
-    return this._allowedScopes;
+    return this[allowedScopesValue];
   }
 
   set allowedScopes(value) {
-    const old = this._allowedScopes;
+    const old = this[allowedScopesValue];
     /* istanbul ignore if */
     if (old === value) {
       return;
     }
-    this._allowedScopes = value;
-    this._allowedIsObject = this._computeAllowedIsObject(value);
-    this._autocompleteScopes = this._normalizeScopes(value);
+    this[allowedScopesValue] = value;
+    this[allowedIsObject] = this[computeAllowedIsObject](value);
+    this[autocompleteScopes] = this[normalizeScopes](value);
+    this.requestUpdate();
   }
 
   get invalid() {
-    return this._invalid;
+    return this[invalidValue];
   }
 
   set invalid(value) {
-    const old = this._invalid;
+    const old = this[invalidValue];
     /* istanbul ignore if */
     if (old === value) {
       return;
     }
-    this._invalid = value;
+    this[invalidValue] = value;
     this.requestUpdate('invalid', old);
-    this._invalidChanged(value);
-    this.dispatchEvent(new CustomEvent('invalid-changed', {
+    this[invalidChangeHandler](value);
+    this.dispatchEvent(new CustomEvent('invalidchange', {
       detail: {
         value
       }
@@ -440,18 +277,25 @@ export class OAuth2ScopeSelector extends ControlStateMixin(ValidatableMixin(LitE
   }
 
   firstUpdated() {
-    this._inputTarget = this.shadowRoot.querySelector('.scope-input');
+    this[inputTarget] = /** @type HTMLElement */ (this.shadowRoot.querySelector('.scope-input'));
+    this.requestUpdate();
   }
 
-  _invalidChanged(invalid) {
-    this.setAttribute('aria-invalid', invalid);
+  /**
+   * Called by the `invalid` property setter when the change.
+   * @param {boolean} invalid 
+   */
+  [invalidChangeHandler](invalid) {
+    this.setAttribute('aria-invalid', String(invalid));
   }
 
-  // Add currently entered scope value to the scopes list.
-  _appendScope() {
+  /**
+   * Adds the currently entered scope value to the scopes list.
+   */
+  [appendScopeHandler]() {
     const value = this.currentValue;
     if (!value) {
-      const toast = /** @type PaperToastElement */ (this.shadowRoot.querySelector('paper-toast[missing-scope]'));
+      const toast = /** @type PaperToastElement */ (this.shadowRoot.querySelector('paper-toast[data-missing-scope]'));
       toast.opened = true;
       return;
     }
@@ -459,14 +303,22 @@ export class OAuth2ScopeSelector extends ControlStateMixin(ValidatableMixin(LitE
     this.add(value);
   }
 
-  // Remove scope button click handler
-  _removeScope(e) {
-    const index = Number(e.currentTarget.dataset.index);
+  /**
+   * Remove scope button click handler
+   * @param {PointerEvent} e 
+   */
+  [removeScopeHandler](e) {
+    const node = /** @type HTMLElement */ (e.currentTarget);
+    const index = Number(node.dataset.index);
     if (Number.isNaN(index) || !this.value) {
       return;
     }
     this.value.splice(index, 1);
-    this.value = [...this.value];
+    this[notifyChanged]();
+    this.requestUpdate();
+    if (this.autoValidate) {
+      this.validate(this.value);
+    }
   }
 
   /**
@@ -474,7 +326,7 @@ export class OAuth2ScopeSelector extends ControlStateMixin(ValidatableMixin(LitE
    *
    * @param {CustomEvent} e
    */
-  _suggestionSelected(e) {
+  [suggestionSelected](e) {
     e.preventDefault();
 
     const scope = e.detail.value;
@@ -495,22 +347,26 @@ export class OAuth2ScopeSelector extends ControlStateMixin(ValidatableMixin(LitE
     if (!scopeValue) {
       return;
     }
-    const all = this.value || [];
+    if (!this.value) {
+      this.value = [];
+    }
+    const all = this.value;
     let index = all.indexOf(scopeValue);
     if (index !== -1) {
       return;
     }
     const as = this.allowedScopes;
     if (as && as.length) {
-      index = this._findAllowedScopeIndex(scopeValue);
+      index = this[findAllowedScopeIndex](scopeValue);
       if (index === -1 && this.preventCustomScopes) {
-        const toast = /** @type PaperToastElement */ (this.shadowRoot.querySelector('paper-toast[dissalowed]'));
+        const toast = /** @type PaperToastElement */ (this.shadowRoot.querySelector('paper-toast[data-disallowed]'));
         toast.opened = true;
         return;
       }
     }
     all.push(scopeValue);
-    this.value = [...all];
+    this[notifyChanged]();
+    this.requestUpdate();
   }
 
   /**
@@ -519,13 +375,13 @@ export class OAuth2ScopeSelector extends ControlStateMixin(ValidatableMixin(LitE
    * @param {string} scope A scope value (label) to find.
    * @return {number} An index of scope or `-1` if not found.
    */
-  _findAllowedScopeIndex(scope) {
+  [findAllowedScopeIndex](scope) {
     let index = -1;
     const scopes = this.allowedScopes;
     if (!scopes || !scopes.length || !scope) {
       return index;
     }
-    if (this._allowedIsObject) {
+    if (this[allowedIsObject]) {
       index = scopes.findIndex((item) => item.label === scope);
     } else {
       index = this.allowedScopes.indexOf(scope);
@@ -533,8 +389,11 @@ export class OAuth2ScopeSelector extends ControlStateMixin(ValidatableMixin(LitE
     return index;
   }
 
-  // A handler for the input's key down event. Handles ENTER press.
-  _keyDown(e) {
+  /**
+   * A handler for the input's key down event. Handles ENTER press.
+   * @param {KeyboardEvent} e 
+   */
+  [keyDownHandler](e) {
     if (e.key !== 'Enter') {
       return;
     }
@@ -542,7 +401,7 @@ export class OAuth2ScopeSelector extends ControlStateMixin(ValidatableMixin(LitE
     if (ac && ac.opened) {
       return;
     }
-    this._appendScope();
+    this[appendScopeHandler]();
     this.currentValue = '';
   }
 
@@ -553,7 +412,7 @@ export class OAuth2ScopeSelector extends ControlStateMixin(ValidatableMixin(LitE
    * strings or objects
    * @return {Suggestion[]|undefined} Normalized scopes list for autocomplete.
    */
-  _normalizeScopes(scopes) {
+  [normalizeScopes](scopes) {
     if (!scopes || !scopes.length) {
       return undefined;
     }
@@ -573,13 +432,13 @@ export class OAuth2ScopeSelector extends ControlStateMixin(ValidatableMixin(LitE
   }
 
   /**
-   * Compute function for the _allowedIsObject. Check first item of the
+   * Compute function for the [allowedIsObject]. Check first item of the
    * `allowedScopes` array if it is an object (return `true`) or
    * string (return `false`);
    * @param {string|AllowedScope[]} allowedScopes
    * @return {boolean}
    */
-  _computeAllowedIsObject(allowedScopes) {
+  [computeAllowedIsObject](allowedScopes) {
     if (!allowedScopes || !allowedScopes.length) {
       return false;
     }
@@ -591,15 +450,15 @@ export class OAuth2ScopeSelector extends ControlStateMixin(ValidatableMixin(LitE
    * Returns a description for the selected scope.
    *
    * @param {string} scope Scope name
-   * @param {boolean} allowedIsObject True if allowed scopes is an object.
+   * @param {boolean} isObject True if allowed scopes is an object.
    * @return {string} Description of the scope or `` (empty string) if the
    * item do not exists.
    */
-  _computeItemDescription(scope, allowedIsObject) {
-    if (!allowedIsObject) {
+  [computeItemDescription](scope, isObject) {
+    if (!isObject) {
       return '';
     }
-    const index = this._findAllowedScopeIndex(scope);
+    const index = this[findAllowedScopeIndex](scope);
     if (index === -1) {
       return '';
     }
@@ -627,7 +486,7 @@ export class OAuth2ScopeSelector extends ControlStateMixin(ValidatableMixin(LitE
     }
     for (let i = 0, len = value.length; i < len; i++) {
       const scope = value[i];
-      const index = this._findAllowedScopeIndex(scope);
+      const index = this[findAllowedScopeIndex](scope);
       if (index === -1) {
         return false;
       }
@@ -635,13 +494,147 @@ export class OAuth2ScopeSelector extends ControlStateMixin(ValidatableMixin(LitE
     return true;
   }
 
-  _handleAutoValidate(autoValidate) {
-    if (autoValidate) {
+  /**
+   * 
+   * @param {boolean} auto The current state of the autoValidate property
+   */
+  [autoValidateHandler](auto) {
+    if (auto) {
       this.invalid = !this._getValidity();
     }
   }
 
-  _currentValueHandler(e) {
-    this.currentValue = e.detail.value;
+  /**
+   * Handler for the input event from the text field.
+   * @param {Event} e 
+   */
+  [valueHandler](e) {
+    const input = /** @type HTMLInputElement */ (e.target);
+    this.currentValue = input.value;
+  }
+
+  [notifyChanged]() {
+    this.dispatchEvent(new CustomEvent('change'));
+  }
+
+  render() {
+    return html `<style>${this.styles}</style>
+    <div class="container">
+      <label class="form-label">Scopes</label>
+      <div class="input-container">
+        ${this[inputTemplate]()}
+        ${this[autocompleteTemplate]()}
+      </div>
+      ${this[scopesListTemplate]()}
+    </div>
+    <paper-toast data-missing-scope text="Enter scope value to add a scope."></paper-toast>
+    <paper-toast data-disallowed text="You can't enter this scope. Use one of the provided scopes."></paper-toast>`;
+  }
+
+  /**
+   * @returns {TemplateResult|string} The template for the scopes list
+   */
+  [scopesListTemplate]() {
+    const { value } = this;
+    if (!value || !value.length) {
+      return '';
+    }
+    return html`
+    <ul class="scopes-list">
+      ${value.map((item, index) => this[scopeTemplate](item, index))}
+    </ul>
+    `;
+  }
+
+  /**
+   * @param {string} scope The scope name to render.
+   * @param {number} index THe scope's index on the value array
+   * @returns {TemplateResult} The template for the scope list item.
+   */
+  [scopeTemplate](scope, index) {
+    const { readOnly, disabled } = this;
+    const isObject = this[allowedIsObject];
+    return html`
+    <li class="scope-item" ?data-two-line="${isObject}">
+      <div class="scope-display">
+        <div class="scope-item-label">${scope}</div>
+        <div data-secondary="">${this[computeItemDescription](scope, isObject)}</div>
+      </div>
+      <anypoint-icon-button
+        class="delete-icon"
+        data-index="${index}"
+        data-action="remove-scope"
+        @click="${this[removeScopeHandler]}"
+        ?disabled="${readOnly || disabled}"
+        aria-label="Press to remove this scope from the list"
+        title="Remove scope"
+      >
+        <arc-icon icon="removeCircleOutline" class="icon"></arc-icon>
+      </anypoint-icon-button>
+    </li>
+    `;
+  }
+
+  /**
+   * @returns {TemplateResult} The template for the main input
+   */
+  [inputTemplate]() {
+    const {
+      name,
+      invalid,
+      currentValue,
+      readOnly,
+      compatibility,
+      outlined,
+      disabled,
+    } = this;
+    const message = this[invalidMessage];
+    return html`
+    <anypoint-input
+      name="${name}"
+      ?invalid="${invalid}"
+      class="scope-input"
+      .value="${currentValue}"
+      ?readOnly="${readOnly}"
+      ?disabled="${disabled}"
+      ?outlined="${outlined}"
+      ?compatibility="${compatibility}"
+      title="Enter authorization scopes for this API endpoint"
+      .invalidMessage="${message}"
+      @input="${this[valueHandler]}"
+      @keydown="${this[keyDownHandler]}"
+    >
+      <label slot="label">Scope value</label>
+      <anypoint-icon-button
+        class="add-button"
+        data-action="add-scope"
+        slot="suffix"
+        @click="${this[appendScopeHandler]}"
+        ?disabled="${readOnly || disabled}"
+        aria-label="Press to add current scope to the list"
+        title="Add scope"
+      >
+        <arc-icon icon="addCircleOutline" class="icon"></arc-icon>
+      </anypoint-icon-button>
+    </anypoint-input>`;
+  }
+
+  /**
+   * @returns {TemplateResult|string} THe template for the autocomplete element, if needed.
+   */
+  [autocompleteTemplate]() {
+    const source = this[autocompleteScopes];
+    const target = this[inputTarget];
+    if (!target || !Array.isArray(source) || !source.length) {
+      return '';
+    }
+    const { compatibility } = this;
+    return html`
+    <anypoint-autocomplete
+      .target="${target}"
+      .source="${source}"
+      ?compatibility="${compatibility}"
+      @selected="${this[suggestionSelected]}"
+    ></anypoint-autocomplete>`;
   }
 }

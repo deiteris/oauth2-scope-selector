@@ -1,6 +1,7 @@
 import { fixture, assert, nextFrame, html } from '@open-wc/testing';
 import * as MockInteractions from '@polymer/iron-test-helpers/mock-interactions.js';
 import '../oauth2-scope-selector.js';
+import { appendScopeHandler, inputTarget } from '../src/OAuth2ScopeSelector.js';
 
 /** @typedef {import('../index').OAuth2ScopeSelector} OAuth2ScopeSelector */
 
@@ -18,43 +19,33 @@ describe('<oauth2-scope-selector>', () => {
    */
   async function allowedFixture() {
     const allowed = ['test'];
-    return fixture(html`
-      <oauth2-scope-selector .allowedScopes="${allowed}" preventcustomscopes></oauth2-scope-selector>
-    `);
+    return fixture(html`<oauth2-scope-selector .allowedScopes="${allowed}" preventCustomScopes></oauth2-scope-selector>`);
   }
   /**
    * @return {Promise<OAuth2ScopeSelector>}
    */
   async function valuesFixture() {
     const value = ['test', 'test-2'];
-    return fixture(html`
-      <oauth2-scope-selector .value="${value}"></oauth2-scope-selector>
-    `);
+    return fixture(html`<oauth2-scope-selector .value="${value}"></oauth2-scope-selector>`);
   }
   /**
    * @return {Promise<OAuth2ScopeSelector>}
    */
   async function requiredFixture() {
-    return fixture(html `
-      <oauth2-scope-selector required></oauth2-scope-selector>
-    `);
+    return fixture(html`<oauth2-scope-selector required></oauth2-scope-selector>`);
   }
   /**
    * @return {Promise<OAuth2ScopeSelector>}
    */
   async function autoValidateFixture() {
-    return fixture(html `
-      <oauth2-scope-selector required autovalidate></oauth2-scope-selector>
-    `);
+    return fixture(html`<oauth2-scope-selector required autoValidate></oauth2-scope-selector>`);
   }
   /**
    * @return {Promise<OAuth2ScopeSelector>}
    */
   async function autoValidateValueFixture() {
     const value = ['test'];
-    return fixture(html `
-      <oauth2-scope-selector required autovalidate .value="${value}"></oauth2-scope-selector>
-    `);
+    return fixture(html`<oauth2-scope-selector required autoValidate .value="${value}"></oauth2-scope-selector>`);
   }
   /**
    * @return {Promise<OAuth2ScopeSelector>}
@@ -66,9 +57,7 @@ describe('<oauth2-scope-selector>', () => {
         description: 'test-description'
       }
     ];
-    return fixture(html `
-      <oauth2-scope-selector .allowedScopes="${allowed}" preventcustomscopes></oauth2-scope-selector>
-    `);
+    return fixture(html `<oauth2-scope-selector .allowedScopes="${allowed}" preventCustomScopes></oauth2-scope-selector>`);
   }
 
   describe('basic', () => {
@@ -77,22 +66,24 @@ describe('<oauth2-scope-selector>', () => {
       element = await basicFixture();
     });
 
-    it('Value is empty array by default', () => {
+    it('has empty array by default', () => {
       assert.isArray(element.value, 'value is an array');
       assert.lengthOf(element.value, 0, 'value is empty');
     });
 
-    it('Accepts scope value', () => {
-      const input = element._inputTarget;
+    it('accepts the scope value', () => {
+      const input = element[inputTarget];
       input.value = 'test';
+      input.dispatchEvent(new CustomEvent('input'));
       MockInteractions.keyDownOn(input, 13, [], 'Enter');
       assert.isArray(element.value, 'value is an array');
       assert.lengthOf(element.value, 1, 'value has 1 item');
     });
 
-    it('Clears input after enter', () => {
-      const input = element._inputTarget;
+    it('clears the input after enter', () => {
+      const input = element[inputTarget];
       input.value = 'test';
+      input.dispatchEvent(new CustomEvent('input'));
       assert.equal(element.currentValue, 'test');
       MockInteractions.keyDownOn(input, 13, [], 'Enter');
       assert.equal(element.currentValue, '');
@@ -106,15 +97,17 @@ describe('<oauth2-scope-selector>', () => {
     });
 
     it('Accepts allowed scope', () => {
-      const input = element._inputTarget;
+      const input = element[inputTarget];
       input.value = 'test';
+      input.dispatchEvent(new CustomEvent('input'));
       MockInteractions.keyDownOn(input, 13, [], 'Enter');
       assert.lengthOf(element.value, 1, 'value has 1 item');
     });
 
     it('Does not accept disallowed scope', () => {
-      const input = element._inputTarget;
+      const input = element[inputTarget];
       input.value = 'tes';
+      input.dispatchEvent(new CustomEvent('input'));
       MockInteractions.keyDownOn(input, 13, [], 'Enter');
       assert.lengthOf(element.value, 0);
     });
@@ -135,7 +128,7 @@ describe('<oauth2-scope-selector>', () => {
       assert.deepEqual(element.value, [scope]);
     });
 
-    it('soes not add scope when prevented', async () => {
+    it('does not add scope when prevented', async () => {
       const element = await allowedFixture();
       element.add(scope);
       assert.deepEqual(element.value, []);
@@ -144,22 +137,22 @@ describe('<oauth2-scope-selector>', () => {
     it('Informs the user about error', async () => {
       const element = await allowedFixture();
       element.add(scope);
-      const toast = element.shadowRoot.querySelector('paper-toast[dissalowed]');
+      const toast = element.shadowRoot.querySelector('paper-toast[data-disallowed]');
       // @ts-ignore
       assert.isTrue(toast.opened);
     });
   });
 
-  describe('_appendScope()', () => {
+  describe('[appendScopeHandler]()', () => {
     it('Does not append empty scopes', async () => {
       const element = await basicFixture();
-      element._appendScope();
+      element[appendScopeHandler]();
       assert.deepEqual(element.value, []);
     });
     it('Informs the user about error', async () => {
       const element = await basicFixture();
-      element._appendScope();
-      const toast = element.shadowRoot.querySelector('paper-toast[missing-scope]');
+      element[appendScopeHandler]();
+      const toast = element.shadowRoot.querySelector('paper-toast[data-missing-scope]');
       // @ts-ignore
       assert.isTrue(toast.opened);
     });
@@ -167,19 +160,19 @@ describe('<oauth2-scope-selector>', () => {
     it('Appends scope when value is entered', async () => {
       const element = await basicFixture();
       element.currentValue = 'test';
-      element._appendScope();
+      element[appendScopeHandler]();
       assert.deepEqual(element.value, ['test']);
     });
 
-    it('Clears input when apends scope', async () => {
+    it('Clears input when appends scope', async () => {
       const element = await basicFixture();
       element.currentValue = 'test';
-      element._appendScope();
+      element[appendScopeHandler]();
       assert.equal(element.currentValue, '');
     });
   });
 
-  describe('_removeScope()', () => {
+  describe('[removeScopeHandler]()', () => {
     it('Removes the scope', async () => {
       const element = await valuesFixture();
       const button = element.shadowRoot.querySelector('[data-action="remove-scope"]');
@@ -194,16 +187,18 @@ describe('<oauth2-scope-selector>', () => {
       element = await multiFixture();
     });
 
-    it('Accepts alloowed scope', () => {
-      const input = element._inputTarget;
+    it('Accepts allowed scope', () => {
+      const input = element[inputTarget];
       input.value = 'test-label';
+      input.dispatchEvent(new CustomEvent('input'));
       MockInteractions.keyDownOn(input, 13, [], 'Enter');
       assert.lengthOf(element.value, 1, 'value has 1 item');
     });
 
-    it('Do not accepts disalloowed scope', () => {
-      const input = element._inputTarget;
+    it('Do not accepts disallowed scope', () => {
+      const input = element[inputTarget];
       input.value = 'test';
+      input.dispatchEvent(new CustomEvent('input'));
       MockInteractions.keyDownOn(input, 13, [], 'Enter');
       assert.lengthOf(element.value, 0);
     });
@@ -219,7 +214,7 @@ describe('<oauth2-scope-selector>', () => {
       assert.isFalse(element.invalid);
     });
 
-    it('valudate() is true', () => {
+    it('validate() is true', () => {
       assert.isTrue(element.validate());
     });
   });
@@ -234,7 +229,7 @@ describe('<oauth2-scope-selector>', () => {
       assert.isFalse(element.invalid);
     });
 
-    it('valudate() is false', () => {
+    it('validate() is false', () => {
       assert.isFalse(element.validate());
     });
 
@@ -253,38 +248,23 @@ describe('<oauth2-scope-selector>', () => {
   });
 
   describe('Auto validation', () => {
-    it('Is valid when default empty', async () => {
+    it('is valid when default empty', async () => {
       const element = await autoValidateFixture();
       assert.isFalse(element.invalid);
     });
 
-    it('Is valid after providing value', async () => {
+    it('is valid after providing value', async () => {
       const element = await autoValidateFixture();
       element.value = ['test'];
       assert.isFalse(element.invalid);
     });
 
-    it('Invalid when removing the value', async () => {
+    it('is invalid when removing the value', async () => {
       const element = await autoValidateValueFixture();
       const button = element.shadowRoot.querySelector('[data-action="remove-scope"]');
       MockInteractions.tap(button);
       await nextFrame();
       assert.isTrue(element.invalid);
-    });
-  });
-
-  describe('compatibility mode', () => {
-    it('sets compatibility on item when setting legacy', async () => {
-      const element = await basicFixture();
-      element.legacy = true;
-      assert.isTrue(element.legacy, 'legacy is set');
-      assert.isTrue(element.compatibility, 'compatibility is set');
-    });
-
-    it('returns compatibility value from item when getting legacy', async () => {
-      const element = await basicFixture();
-      element.compatibility = true;
-      assert.isTrue(element.legacy, 'legacy is set');
     });
   });
 });

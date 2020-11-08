@@ -9,18 +9,17 @@ class ComponentDemo extends DemoPage {
   constructor() {
     super();
     this.initObservableProperties([
-      'demoOutlined',
-      'democompatibility',
+      'outlined',
       'readOnly',
       'mainValue',
-      'demoCompatibility'
+      'compatibility'
     ]);
-    this._componentName = 'oauth2-scope-selector';
+    this.componentName = 'oauth2-scope-selector';
     this.demoStates = ['Filled', 'Outlined', 'Anypoint'];
     this.readOnly = false;
     this._mainDemoStateHandler = this._mainDemoStateHandler.bind(this);
     this._toggleMainOption = this._toggleMainOption.bind(this);
-    this._mainValueHandler = this._mainValueHandler.bind(this);
+    this._valueChangeHandler = this._valueChangeHandler.bind(this);
 
     this.complexScopes = [{
         'label': 'user',
@@ -127,13 +126,13 @@ class ComponentDemo extends DemoPage {
 
   _mainDemoStateHandler(e) {
     const state = e.detail.value;
-    this.demoOutlined = state === 1;
-    this.demoCompatibility = state === 2;
+    this.outlined = state === 1;
+    this.compatibility = state === 2;
     this._updateCompatibility();
   }
 
-  _mainValueHandler(e) {
-    this.mainValue = e.detail.value;
+  _valueChangeHandler(e) {
+    this.mainValue = e.target.value;
     console.log(this.mainValue);
   }
 
@@ -141,8 +140,8 @@ class ComponentDemo extends DemoPage {
     const {
       demoStates,
       darkThemeActive,
-      demoOutlined,
-      demoCompatibility,
+      outlined,
+      compatibility,
       readOnly,
     } = this;
     return html `<section class="documentation-section">
@@ -153,18 +152,18 @@ class ComponentDemo extends DemoPage {
     </p>
     <arc-interactive-demo
       .states="${demoStates}"
-      @state-chanegd="${this._mainDemoStateHandler}"
+      @state-changed="${this._mainDemoStateHandler}"
       ?dark="${darkThemeActive}"
     >
-
       <oauth2-scope-selector
         slot="content"
         required
-        autovalidate
-        @value-changed="${this._mainValueHandler}"
-        ?outlined="${demoOutlined}"
-        ?compatibility="${demoCompatibility}"
-        ?readOnly="${readOnly}"></oauth2-scope-selector>
+        autoValidate
+        ?outlined="${outlined}"
+        ?compatibility="${compatibility}"
+        ?readOnly="${readOnly}"
+        @change="${this._valueChangeHandler}"
+      ></oauth2-scope-selector>
 
       <label slot="options" id="mainOptionsLabel">Options</label>
       <anypoint-checkbox
@@ -194,10 +193,14 @@ class ComponentDemo extends DemoPage {
   }
 
   _usageTemplate() {
+    const {
+      outlined,
+      compatibility,
+    } = this;
     return html `
       <section class="documentation-section">
         <h2>Usage</h2>
-        <p>Anypoint dropdown menu comes with 3 predefied styles:</p>
+        <p>Anypoint dropdown menu comes with 3 predefined styles:</p>
         <ul>
           <li><b>Filled</b> (default)</li>
           <li><b>Outlined</b></li>
@@ -213,13 +216,13 @@ class ComponentDemo extends DemoPage {
           the element render invalid sate.
         </p>
 
-        <oauth2-scope-selector .allowedScopes="${this.simpleScopes}" autovalidate></oauth2-scope-selector>
+        <oauth2-scope-selector ?outlined="${outlined}" ?compatibility="${compatibility}" .allowedScopes="${this.simpleScopes}" autoValidate></oauth2-scope-selector>
 
         <details>
           <summary>Code example</summary>
           <code>
             <pre>
-${`<oauth2-scope-selector allowedscopes='["user", "user:email", "user:follow", "..."]' autovalidate></oauth2-scope-selector>`}
+${`<oauth2-scope-selector allowedScopes='["user", "user:email", "user:follow", "..."]' autoValidate></oauth2-scope-selector>`}
             </pre>
           </code>
         </details>
@@ -230,13 +233,13 @@ ${`<oauth2-scope-selector allowedscopes='["user", "user:email", "user:follow", "
           to disallow providing values that are now allowed.
         </p>
 
-        <oauth2-scope-selector .allowedScopes="${this.simpleScopes}" preventcustomscopes></oauth2-scope-selector>
+        <oauth2-scope-selector ?outlined="${outlined}" ?compatibility="${compatibility}" .allowedScopes="${this.simpleScopes}" preventCustomScopes></oauth2-scope-selector>
 
         <details>
           <summary>Code example</summary>
           <code>
             <pre>
-${`<oauth2-scope-selector preventcustomscopes allowedscopes='["user", "user:email", "user:follow", "..."]' autovalidate></oauth2-scope-selector>`}
+${`<oauth2-scope-selector preventCustomScopes allowedScopes='["user", "user:email", "user:follow", "..."]' autoValidate></oauth2-scope-selector>`}
             </pre>
           </code>
         </details>
@@ -247,13 +250,13 @@ ${`<oauth2-scope-selector preventcustomscopes allowedscopes='["user", "user:emai
           value.
         </p>
 
-        <oauth2-scope-selector .allowedScopes="${this.complexScopes}" preventcustomscopes></oauth2-scope-selector>
+        <oauth2-scope-selector ?outlined="${outlined}" ?compatibility="${compatibility}" .allowedScopes="${this.complexScopes}" preventCustomScopes></oauth2-scope-selector>
 
         <details>
           <summary>Code example</summary>
           <code>
             <pre>
-${`<oauth2-scope-selector preventcustomscopes allowedscopes='[{"label":"user:email", "description": "..."}]' autovalidate></oauth2-scope-selector>`}
+${`<oauth2-scope-selector preventCustomScopes allowedScopes='[{"label":"user:email", "description": "..."}]' autoValidate></oauth2-scope-selector>`}
             </pre>
           </code>
         </details>

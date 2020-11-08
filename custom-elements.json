@@ -1,0 +1,183 @@
+{
+  "version": "experimental",
+  "tags": [
+    {
+      "name": "oauth2-scope-selector",
+      "path": "./oauth2-scope-selector.js",
+      "description": "A selector for OAuth 2.0 scope. Provides the UI to enter a scope for OAuth 2.0 settings.\n\n#### Example\n\n```html\n<oauth2-scope-selector></oauth2-scope-selector>\n```\n\n`allowed-scopes` attribute allows to provide a list of predefined scopes\nsupported by the endpoint. When the list is set, autocomplete is enabled.\nAutocomplete is supported by `anypoint-autocomplete` element.\n\nSetting `preventCustomScopes` disallows adding a scope that is not defined\nin the `allowed-scopes` array. This can only work with `allowed-scopes` set\n\n#### Example\n\n```html\n<oauth2-scope-selector preventCustomScopes allowedScopes='[\"email\", \"profile\"]'></oauth2-scope-selector>\n```\n\nAnd in JavaScript\n\n```javascript\nvar selector = document.querySelector('oauth2-scope-selector');\nselector.allowedScopes = ['profile', 'email'];\n```\n\n## Adding scope documentation\n\n`allowedScopes` property can be an list of object to present scope description\nafter it is selected. Object in the array has to contain `label` and `description` properties.\n`label` is scope value.\n\n### Example\n\n```javascript\nconst scopes = [\n   {\n     'label': 'user',\n     'description': 'Grants read/write access to profile info only. Note that this scope includes user:email and user:follow.'\n   },\n   {'label': 'user:email', 'description': 'Grants read access to a user\\'s email addresses.'},\n   {'label': 'user:follow', 'description': 'Grants access to follow or unfollow other users.'}\n];\nconst selector = document.querySelector('oauth2-scope-selector');\nselector.allowedScopes = scopes;\n```\n\nSee demo page for example implementation.\n\n## Use with forms\n\nThe element can be used in a form by using `iron-form` custom element.\nIt's value is reported to the form as any other form input. `name` attribute\nmust be set in order to process the value.\n\n```html\n<iron-form id=\"form\">\n   <form>\n     <oauth2-scope-selector name=\"scope\" required></oauth2-scope-selector>\n   </form>\n</iron-form>\n<script>\nconst form = document.getElementById('form');\nconst values = form.serializeForm();\nconsole.log(values); // {\"scope\": []}\n</script>\n```",
+      "attributes": [
+        {
+          "name": "name",
+          "description": "Form input name",
+          "type": "string"
+        },
+        {
+          "name": "currentValue",
+          "description": "Current value entered by the user. This is not a scope and it is not\nyet in the scopes list. User has to accept the scope before it become\navailable in the scopes list.",
+          "type": "string"
+        },
+        {
+          "name": "preventCustomScopes",
+          "description": "allowed to be add.",
+          "type": "boolean"
+        },
+        {
+          "name": "autoValidate",
+          "description": "Set to true to auto-validate the input value when it changes.",
+          "type": "boolean"
+        },
+        {
+          "name": "required",
+          "description": "Set to true to mark the input as required.",
+          "type": "boolean"
+        },
+        {
+          "name": "readOnly",
+          "description": "When set the editor is in read only mode.",
+          "type": "boolean"
+        },
+        {
+          "name": "compatibility",
+          "description": "Enables compatibility with Anypoint components.",
+          "type": "boolean"
+        },
+        {
+          "name": "outlined",
+          "description": "Enables Material Design outlined style",
+          "type": "boolean"
+        },
+        {
+          "name": "disabled",
+          "description": "When set the editor is in disabled mode.",
+          "type": "boolean"
+        },
+        {
+          "name": "focused",
+          "description": "If true the element currently has focus.",
+          "type": "boolean"
+        },
+        {
+          "name": "validator",
+          "description": "Name of the validator or validators to use.\nIf the element should be validated by more than one validator then separate names with\nspace. See docs for `ValidatorMixin` for description of how to define a\nvalidator.",
+          "type": "string"
+        },
+        {
+          "name": "invalid",
+          "description": "Returns true if the value is invalid.\n\nIf `autoValidate` is true, the `invalid` attribute is managed automatically,\nwhich can clobber attempts to manage it manually.",
+          "type": "boolean"
+        }
+      ],
+      "properties": [
+        {
+          "name": "styles",
+          "type": "CSSResult"
+        },
+        {
+          "name": "value",
+          "description": "List of scopes entered by the user. It can be used it pre-select scopes\nby providing an array with scope values.",
+          "type": "string[]"
+        },
+        {
+          "name": "name",
+          "attribute": "name",
+          "description": "Form input name",
+          "type": "string"
+        },
+        {
+          "name": "currentValue",
+          "attribute": "currentValue",
+          "description": "Current value entered by the user. This is not a scope and it is not\nyet in the scopes list. User has to accept the scope before it become\navailable in the scopes list.",
+          "type": "string"
+        },
+        {
+          "name": "allowedScopes",
+          "description": "List of available scopes.\nIt can be either list of string or list of object. If this is the\nlist of object then this expects to each object contain a `label`\nand `description` keys.\n\n### Example\n```\n{\n   'label': 'user',\n   'description': 'Grants read/write access to profile info only. '\n}\n```\nWhen the description is provided it will be displayed below the name\nof the scope.",
+          "type": "string[] | AllowedScope[] | undefined"
+        },
+        {
+          "name": "preventCustomScopes",
+          "attribute": "preventCustomScopes",
+          "description": "allowed to be add.",
+          "type": "boolean"
+        },
+        {
+          "name": "autoValidate",
+          "attribute": "autoValidate",
+          "description": "Set to true to auto-validate the input value when it changes.",
+          "type": "boolean"
+        },
+        {
+          "name": "required",
+          "attribute": "required",
+          "description": "Set to true to mark the input as required.",
+          "type": "boolean"
+        },
+        {
+          "name": "readOnly",
+          "attribute": "readOnly",
+          "description": "When set the editor is in read only mode.",
+          "type": "boolean"
+        },
+        {
+          "name": "compatibility",
+          "attribute": "compatibility",
+          "description": "Enables compatibility with Anypoint components.",
+          "type": "boolean"
+        },
+        {
+          "name": "outlined",
+          "attribute": "outlined",
+          "description": "Enables Material Design outlined style",
+          "type": "boolean"
+        },
+        {
+          "name": "disabled",
+          "attribute": "disabled",
+          "description": "When set the editor is in disabled mode.",
+          "type": "boolean"
+        },
+        {
+          "name": "focused",
+          "attribute": "focused",
+          "description": "If true the element currently has focus.",
+          "type": "boolean"
+        },
+        {
+          "name": "validator",
+          "attribute": "validator",
+          "description": "Name of the validator or validators to use.\nIf the element should be validated by more than one validator then separate names with\nspace. See docs for `ValidatorMixin` for description of how to define a\nvalidator.",
+          "type": "string"
+        },
+        {
+          "name": "validationStates",
+          "description": "After calling `validate()` this is be populated by latest result of the\ntest for each validator. Result item contains following properties:\n\n- validator `string` Name of the validator\n- valid `boolean` Result of the test\n- message `string` Error message\n\nThis property is `undefined` if `validator` is not set.",
+          "type": "ValidationResult[]"
+        },
+        {
+          "name": "invalid",
+          "attribute": "invalid",
+          "description": "Returns true if the value is invalid.\n\nIf `autoValidate` is true, the `invalid` attribute is managed automatically,\nwhich can clobber attempts to manage it manually.",
+          "type": "boolean"
+        }
+      ],
+      "events": [
+        {
+          "name": "change",
+          "description": "When the scopes list changed. Non bubbling."
+        },
+        {
+          "name": "invalidchange",
+          "description": "When the invalid value change. Non bubbling."
+        },
+        {
+          "name": "focusedchange",
+          "description": "When the `focused` property has changed"
+        },
+        {
+          "name": "disabledchange",
+          "description": "When the `disabled` property has changed"
+        }
+      ]
+    }
+  ]
+}
