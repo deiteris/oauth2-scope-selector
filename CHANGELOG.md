@@ -216,3 +216,17 @@ takes100% width. But, thet one is on Microsoft.
  [336fe8e](https://github.com/advanced-rest-client/oauth2-scope-selector/commit/336fe8e446fd50a8abf600923393b1c6ba788daf) by jarrodek
 
 
+<a name="4.0.0"></a>
+# [4.0.0](https://github.com/advanced-rest-client/oauth2-scope-selector/compare/3.0.4...4.0.0) (2020-11-08)
+
+## Update
+
+* [ci skip] automated merge master->stage. syncing main branches [2ea57c2](https://github.com/advanced-rest-client/oauth2-scope-selector/commit/2ea57c222f5b314af428df401e05dd87d63e985e) by Ci agent
+* upgrading deps, adding types [79c4432](https://github.com/advanced-rest-client/oauth2-scope-selector/commit/79c443247f5b4d7301bc43084d456be12fbd998d) by Pawel
+
+
+## Refactor
+
+* upgrading component's internal structure [092b670](https://github.com/advanced-rest-client/oauth2-scope-selector/commit/092b670e1277088dee39eda75f5a50b833f0a60a) by Pawel
+
+
