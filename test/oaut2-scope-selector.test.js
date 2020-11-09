@@ -267,4 +267,18 @@ describe('<oauth2-scope-selector>', () => {
       assert.isTrue(element.invalid);
     });
   });
+
+  describe('accessibility', () => {
+    /**
+     * @return {Promise<OAuth2ScopeSelector>}
+     */
+    async function fullFixture() {
+      const value = ['test', 'test-2'];
+      return fixture(html`<oauth2-scope-selector name="scope" .value="${value}"></oauth2-scope-selector>`);
+    }
+    it('is accessible', async () => {
+      const element = await fullFixture();
+      await assert.isAccessible(element);
+    });
+  });
 });
