@@ -1,8 +1,4 @@
-[![Published on NPM](https://img.shields.io/npm/v/@advanced-rest-client/oauth2-scope-selector.svg)](https://www.npmjs.com/package/@advanced-rest-client/oauth2-scope-selector)
-
-[![Build Status](https://travis-ci.com/advanced-rest-client/oauth2-scope-selector.svg)](https://travis-ci.com/advanced-rest-client/oauth2-scope-selector)
-
-## &lt;oauth2-scope-selector&gt;
+# oauth2-scope-selector
 
 Form element that provides the UI to enter a scope for OAuth 2.0 settings.
 
@@ -10,10 +6,15 @@ Form element that provides the UI to enter a scope for OAuth 2.0 settings.
 <oauth2-scope-selector name="scope" allowedscopes='["email", "profile"]'></oauth2-scope-selector>
 ```
 
+[![Published on NPM](https://img.shields.io/npm/v/@advanced-rest-client/oauth2-scope-selector.svg)](https://www.npmjs.com/package/@advanced-rest-client/oauth2-scope-selector)
+
+[![Tests and publishing](https://github.com/advanced-rest-client/oauth2-scope-selector/actions/workflows/deployment.yml/badge.svg)](https://github.com/advanced-rest-client/oauth2-scope-selector/actions/workflows/deployment.yml)
+
 ## Usage
 
 ### Installation
-```
+
+```sh
 npm install --save @advanced-rest-client/oauth2-scope-selector
 ```
 
@@ -32,7 +33,7 @@ npm install --save @advanced-rest-client/oauth2-scope-selector
 </html>
 ```
 
-### Deveopment
+### Development
 
 ```sh
 git clone https://github.com/advanced-rest-client/oauth2-scope-selector
@@ -47,10 +48,7 @@ npm start
 ```
 
 ### Running the tests
+
 ```sh
 npm test
 ```
-
-### API components
-
-This components is a part of [API components ecosystem](https://elements.advancedrestclient.com/)
